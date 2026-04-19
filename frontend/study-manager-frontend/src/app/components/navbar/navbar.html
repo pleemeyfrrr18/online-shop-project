@@ -1,1 +1,8 @@
-<p>navbar works!</p>
+<nav class="navbar">
+  <div class="nav-brand">📚 Study Manager</div>
+  <div class="nav-links">
+    <a routerLink="/tasks" routerLinkActive="active">Tasks</a>
+    <a routerLink="/categories" routerLinkActive="active">Categories</a>
+    <button (click)="logout()">Logout</button>
+  </div>
+</nav>

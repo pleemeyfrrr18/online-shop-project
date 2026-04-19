@@ -1,0 +1,42 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 30px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+}
+
+.nav-brand {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.nav-links {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.nav-links a {
+  color: white;
+  text-decoration: none;
+  font-size: 15px;
+  opacity: 0.85;
+}
+
+.nav-links a.active {
+  opacity: 1;
+  font-weight: bold;
+  border-bottom: 2px solid white;
+}
+
+.nav-links button {
+  background: white;
+  color: #764ba2;
+  border: none;
+  border-radius: 8px;
+  padding: 7px 16px;
+  cursor: pointer;
+  font-weight: bold;
+}

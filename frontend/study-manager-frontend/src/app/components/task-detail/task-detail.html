@@ -1,1 +1,27 @@
-<p>task-detail works!</p>
+<div class="detail-container">
+  @if (isLoading) {
+    <p>Loading...</p>
+  }
+
+  @if (errorMessage) {
+    <div class="error">{{ errorMessage }}</div>
+  }
+
+  @if (task) {
+    @if (!isEditing) {
+      <h1>{{ task.title }}</h1>
+      <p>{{ task.description }}</p>
+      <p>Due: {{ task.due_date }}</p>
+      <button (click)="isEditing = true">Edit</button>
+      <button (click)="deleteTask()" class="delete-btn">Delete</button>
+      <a routerLink="/tasks">← Back to Tasks</a>
+    } @else {
+      <h1>Edit Task</h1>
+      <input [(ngModel)]="editTask.title" placeholder="Title" />
+      <input [(ngModel)]="editTask.description" placeholder="Description" />
+      <input [(ngModel)]="editTask.due_date" type="date" />
+      <button (click)="saveTask()">Save</button>
+      <button (click)="isEditing = false">Cancel</button>
+    }
+  }
+</div>

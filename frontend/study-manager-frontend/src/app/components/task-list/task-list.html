@@ -1,1 +1,31 @@
-<p>task-list works!</p>
+<div class="task-container">
+  <h1>My Tasks</h1>
+
+  @if (errorMessage) {
+    <div class="error">{{ errorMessage }}</div>
+  }
+
+  <div class="new-task-form">
+    <h2>Add New Task</h2>
+    <input [(ngModel)]="newTask.title" placeholder="Task title" />
+    <input [(ngModel)]="newTask.description" placeholder="Description" />
+    <input [(ngModel)]="newTask.due_date" type="date" />
+    <button (click)="createTask()">Add Task</button>
+  </div>
+
+  @if (isLoading) {
+    <p>Loading...</p>
+  }
+
+  <div class="task-list">
+    @for (task of tasks; track task.id) {
+      <div class="task-card">
+        <h3>{{ task.title }}</h3>
+        <p>{{ task.description }}</p>
+        <p>Due: {{ task.due_date }}</p>
+        <button (click)="deleteTask(task.id)" class="delete-btn">Delete</button>
+        <a [routerLink]="['/tasks', task.id]">View Details</a>
+      </div>
+    }
+  </div>
+</div>

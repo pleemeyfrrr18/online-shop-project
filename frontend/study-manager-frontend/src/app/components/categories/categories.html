@@ -1,1 +1,28 @@
-<p>categories works!</p>
+<div class="categories-container">
+  <h1>Categories</h1>
+
+  @if (errorMessage) {
+    <div class="error">{{ errorMessage }}</div>
+  }
+
+  <div class="new-category-form">
+    <h2>Add New Category</h2>
+    <input [(ngModel)]="newCategory.name" placeholder="Category name" />
+    <input [(ngModel)]="newCategory.description" placeholder="Description" />
+    <button (click)="createCategory()">Add Category</button>
+  </div>
+
+  @if (isLoading) {
+    <p>Loading...</p>
+  }
+
+  <div class="category-list">
+    @for (category of categories; track category.id) {
+      <div class="category-card">
+        <h3>{{ category.name }}</h3>
+        <p>{{ category.description }}</p>
+        <button (click)="deleteCategory(category.id)" class="delete-btn">Delete</button>
+      </div>
+    }
+  </div>
+</div>

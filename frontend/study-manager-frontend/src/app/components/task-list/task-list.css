@@ -1,0 +1,93 @@
+.task-container {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+h1 {
+  color: #4a4a8a;
+  margin-bottom: 20px;
+}
+
+.error {
+  background: #ffe0e0;
+  color: #c00;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
+
+.new-task-form {
+  background: #f5f5ff;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.new-task-form h2 {
+  color: #4a4a8a;
+  margin: 0;
+}
+
+.new-task-form input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.new-task-form button {
+  padding: 10px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 15px;
+}
+
+.task-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.task-card {
+  background: white;
+  border: 1px solid #e0e0f0;
+  border-radius: 12px;
+  padding: 15px 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.task-card h3 {
+  margin: 0 0 5px;
+  color: #333;
+}
+
+.task-card p {
+  margin: 3px 0;
+  color: #666;
+  font-size: 14px;
+}
+
+.task-card a {
+  color: #667eea;
+  text-decoration: none;
+  font-size: 14px;
+  margin-right: 10px;
+}
+
+.delete-btn {
+  background: #ff4d4d;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 5px 12px;
+  cursor: pointer;
+  margin-right: 10px;
+}
