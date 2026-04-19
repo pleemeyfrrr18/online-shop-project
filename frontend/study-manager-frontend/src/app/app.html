@@ -1,2 +1,4 @@
-<app-navbar />
+@if (!isLoginPage()) {
+  <app-navbar />
+}
 <router-outlet />
