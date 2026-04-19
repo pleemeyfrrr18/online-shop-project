@@ -12,7 +12,7 @@ export interface LoginCredentials {
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:8000/api';
+  private apiUrl = 'http://localhost:8000/api/users';
   private tokenKey = 'access_token';
 
   constructor(private http: HttpClient) {}
