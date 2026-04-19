@@ -3,28 +3,33 @@
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background-color: #F5F7F9;
+  background-image: repeating-radial-gradient(circle at 0 0, transparent 0, #F5F7F9 60px), repeating-linear-gradient(#7eb5a61c, #7eb5a61e);
 }
 
 .login-card {
-  background: white;
-  border-radius: 10px;
-  padding: 40px;
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 48px 40px;
   width: 100%;
-  max-width: 400px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  max-width: 420px;
+  box-shadow: 0 4px 24px rgba(107, 159, 174, 0.12);
+  border: 1px solid #E2EBEE;
 }
 
 .login-card h2 {
   text-align: center;
-  color: #333;
-  margin-bottom: 10px;
+  color: #2D3E45;
+  margin-bottom: 8px;
+  font-size: 24px;
+  font-weight: 500;
 }
 
 .subtitle {
   text-align: center;
-  color: #666;
-  margin-bottom: 30px;
+  color: #607B82;
+  margin-bottom: 36px;
+  font-size: 14px;
 }
 
 .form-group {
@@ -33,47 +38,60 @@
 
 .form-group label {
   display: block;
-  margin-bottom: 5px;
-  color: #333;
+  margin-bottom: 8px;
+  color: #2D3E45;
   font-weight: 500;
+  font-size: 14px;
 }
 
 .form-group input {
   width: 100%;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  font-size: 16px;
+  padding: 12px 16px;
+  border: 1px solid #E2EBEE;
+  border-radius: 12px;
+  font-size: 15px;
+  background: #F5F7F9;
+  color: #2D3E45;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .form-group input:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: #6B9FAE;
+  box-shadow: 0 0 0 3px rgba(107, 159, 174, 0.12);
+  background: #ffffff;
 }
 
 .error-message {
-  background: #fee;
-  color: #c33;
-  padding: 10px;
-  border-radius: 5px;
+  background: #FEF0EE;
+  color: #B85450;
+  padding: 12px 16px;
+  border-radius: 10px;
   margin-bottom: 20px;
   text-align: center;
+  font-size: 14px;
+  border: 1px solid #F5C5C0;
 }
 
 button {
   width: 100%;
-  padding: 12px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 13px;
+  background: #6B9FAE;
   color: white;
   border: none;
-  border-radius: 5px;
-  font-size: 16px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 500;
   cursor: pointer;
-  transition: opacity 0.3s;
+  transition: background 0.2s, transform 0.1s;
 }
 
 button:hover {
-  opacity: 0.9;
+  background: #4A7F8E;
+}
+
+button:active {
+  transform: scale(0.99);
 }
 
 button:disabled {
