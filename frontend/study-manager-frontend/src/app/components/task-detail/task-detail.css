@@ -1,51 +1,141 @@
 .detail-container {
-  max-width: 600px;
+  max-width: 620px;
   margin: 40px auto;
-  padding: 20px;
-  font-family: Arial, sans-serif;
+  padding: 0 20px;
+  font-family: 'Inter', sans-serif;
+}
+
+.back-link {
+  display: inline-block;
+  margin-bottom: 20px;
+  color: #6B9FAE;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.back-link:hover {
+  color: #4A7F8E;
 }
 
 h1 {
-  color: #4a4a8a;
+  font-size: 26px;
+  color: #2D3E45;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.description {
+  color: #607B82;
+  font-size: 15px;
+  margin-bottom: 12px;
+}
+
+.deadline, .priority {
+  color: #607B82;
+  font-size: 14px;
+  margin-bottom: 6px;
 }
 
 .error {
-  background: #ffe0e0;
-  color: #c00;
-  padding: 10px;
-  border-radius: 8px;
-  margin-bottom: 15px;
-}
-
-input {
-  display: block;
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 10px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
+  background: #FEF0EE;
+  color: #B85450;
+  padding: 12px 16px;
+  border-radius: 10px;
+  margin-bottom: 16px;
   font-size: 14px;
-  box-sizing: border-box;
+  border: 1px solid #F5C5C0;
 }
 
-button {
-  padding: 8px 16px;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+.status-bar {
+  display: flex;
+  gap: 8px;
+  margin: 20px 0;
+}
+
+.status-btn {
+  padding: 8px 18px;
+  border: 1.5px solid #E2EBEE;
+  border-radius: 20px;
+  background: #F5F7F9;
+  color: #607B82;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.2s;
+  margin: 0;
+}
+
+.status-btn:hover {
+  border-color: #6B9FAE;
+  color: #4A7F8E;
+  background: #EDF2F4;
+}
+
+.status-btn.active {
+  background: #6B9FAE;
+  color: white;
+  border-color: #6B9FAE;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.edit-btn {
+  padding: 10px 24px;
+  background: #6B9FAE;
   color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   cursor: pointer;
-  margin-right: 10px;
-  margin-top: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background 0.2s;
+  margin: 0;
+}
+
+.edit-btn:hover {
+  background: #4A7F8E;
 }
 
 .delete-btn {
-  background: #ff4d4d;
+  padding: 10px 24px;
+  background: #FEF0EE;
+  color: #B85450;
+  border: 1px solid #F5C5C0;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background 0.2s;
+  margin: 0;
 }
 
-a {
-  display: inline-block;
-  margin-top: 15px;
-  color: #667eea;
-  text-decoration: none;
+.delete-btn:hover {
+  background: #FDDBD8;
+}
+
+input, select {
+  display: block;
+  width: 100%;
+  padding: 11px 14px;
+  margin-bottom: 12px;
+  border: 1.5px solid #E2EBEE;
+  border-radius: 10px;
+  font-size: 14px;
+  color: #2D3E45;
+  background: #F5F7F9;
+  box-sizing: border-box;
+  outline: none;
+  transition: border 0.2s;
+  font-family: 'Inter', sans-serif;
+}
+
+input:focus, select:focus {
+  border-color: #6B9FAE;
+  background: #ffffff;
 }
