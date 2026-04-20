@@ -6,17 +6,18 @@
 
 h1 {
   font-size: 26px;
-  color: #1a1a2e;
+  color: #2D3E45;
   margin-bottom: 24px;
 }
 
 .error {
-  background: #fdecea;
-  color: #c62828;
+  background: #FEF0EE;
+  color: #B85450;
   padding: 12px 16px;
   border-radius: 10px;
   margin-bottom: 16px;
   font-size: 14px;
+  border: 1px solid #F5C5C0;
 }
 
 .new-task-form {
@@ -27,43 +28,48 @@ h1 {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  box-shadow: 0 2px 16px rgba(107,159,174,0.1);
+  border: 1px solid #E2EBEE;
 }
 
 .new-task-form h2 {
   font-size: 16px;
-  color: #5c6bc0;
+  color: #6B9FAE;
   margin-bottom: 4px;
+  font-weight: 500;
 }
 
 .new-task-form input {
   padding: 11px 14px;
-  border: 1.5px solid #e8eaf0;
+  border: 1.5px solid #E2EBEE;
   border-radius: 10px;
   font-size: 14px;
-  color: #1a1a2e;
-  transition: border 0.2s;
+  color: #2D3E45;
+  background: #F5F7F9;
+  transition: border 0.2s, box-shadow 0.2s;
   outline: none;
 }
 
 .new-task-form input:focus {
-  border-color: #5c6bc0;
+  border-color: #6B9FAE;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(107,159,174,0.12);
 }
 
 .new-task-form button {
   padding: 12px;
-  background: #5c6bc0;
+  background: #6B9FAE;
   color: white;
   border: none;
   border-radius: 10px;
   cursor: pointer;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
   transition: background 0.2s;
 }
 
 .new-task-form button:hover {
-  background: #3f51b5;
+  background: #4A7F8E;
 }
 
 .task-list {
@@ -76,38 +82,45 @@ h1 {
   background: #ffffff;
   border-radius: 14px;
   padding: 18px 22px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 10px rgba(107,159,174,0.08);
+  border: 1px solid #E2EBEE;
   display: flex;
   flex-direction: column;
   gap: 6px;
-  transition: box-shadow 0.2s;
+  transition: box-shadow 0.2s, transform 0.1s;
 }
 
 .task-card:hover {
-  box-shadow: 0 4px 20px rgba(92,107,192,0.12);
+  box-shadow: 0 4px 20px rgba(107,159,174,0.15);
+  transform: translateY(-1px);
 }
 
 .task-card h3 {
   font-size: 16px;
-  color: #1a1a2e;
+  color: #2D3E45;
+  font-weight: 500;
 }
 
 .task-card p {
   font-size: 13px;
-  color: #888;
+  color: #607B82;
 }
 
 .task-card a {
-  color: #5c6bc0;
+  color: #6B9FAE;
   text-decoration: none;
   font-size: 13px;
   font-weight: 500;
 }
 
+.task-card a:hover {
+  color: #4A7F8E;
+}
+
 .delete-btn {
-  background: #fdecea;
-  color: #c62828;
-  border: none;
+  background: #FEF0EE;
+  color: #B85450;
+  border: 1px solid #F5C5C0;
   border-radius: 8px;
   padding: 6px 14px;
   cursor: pointer;
@@ -118,5 +131,5 @@ h1 {
 }
 
 .delete-btn:hover {
-  background: #ffcdd2;
+  background: #FDDBD8;
 }
