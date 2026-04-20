@@ -60,3 +60,13 @@
 .nav-links button:hover {
   background: #4A7F8E;
 }
+
+.xp-badge {
+  background: #EDF2F4;
+  color: #4A7F8E;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  border: 1px solid #E2EBEE;
+}
