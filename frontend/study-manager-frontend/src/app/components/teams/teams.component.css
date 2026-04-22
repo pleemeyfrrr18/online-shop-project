@@ -1,0 +1,158 @@
+.teams-container {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.section-header h1 {
+  margin-bottom: 8px;
+  color: #213547;
+}
+
+.section-subtitle {
+  color: #5a6d74;
+  margin-bottom: 24px;
+}
+
+.teams-grid {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  gap: 24px;
+}
+
+.sidebar-card,
+.team-card {
+  background: #ffffff;
+  border: 1px solid #e7eef3;
+  border-radius: 18px;
+  padding: 24px;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.06);
+}
+
+.new-team-form label,
+.new-project-form label {
+  display: block;
+  margin-bottom: 16px;
+}
+
+.new-team-form span,
+.new-project-form span {
+  display: block;
+  margin-bottom: 8px;
+  color: #5a6d74;
+  font-size: 14px;
+}
+
+.new-team-form input,
+.new-project-form input,
+.new-project-form select {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #dce6eb;
+  border-radius: 14px;
+  background: #f7fbfd;
+  color: #213547;
+}
+
+.primary-button,
+.link-button,
+.danger-button,
+.invite-row button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 18px;
+  border-radius: 12px;
+  cursor: pointer;
+  border: none;
+  color: #ffffff;
+  background: #4a8d9c;
+  transition: background 0.2s ease;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.primary-button:hover,
+.link-button:hover,
+.invite-row button:hover {
+  background: #3b7c88;
+}
+
+.danger-button {
+  background: #c62828;
+}
+
+.team-list-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.team-list {
+  display: grid;
+  gap: 16px;
+}
+
+.team-card {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.team-card h3 {
+  margin-bottom: 10px;
+  color: #213547;
+}
+
+.team-card p {
+  margin: 0;
+  color: #5a6d74;
+}
+
+.invite-row,
+.team-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.invite-row select {
+  min-width: 0;
+  flex: 1;
+  padding: 9px 10px;
+  border: 1px solid #dce6eb;
+  border-radius: 10px;
+  background: #f7fbfd;
+}
+
+.team-actions {
+  flex-direction: column;
+  margin-top: 0;
+}
+
+.empty-state,
+.loading {
+  background: #f7fbfd;
+  color: #4f6d74;
+  border: 1px solid #dce6eb;
+  padding: 18px;
+  border-radius: 16px;
+}
+
+.error {
+  background: #fceaea;
+  color: #c62828;
+  padding: 14px 18px;
+  border-radius: 14px;
+  border: 1px solid #f3c2c2;
+}
+
+.success {
+  background: #edf8f0;
+  color: #246b32;
+  padding: 14px 18px;
+  border-radius: 14px;
+  border: 1px solid #bfe4c7;
+  margin-bottom: 20px;
+}

@@ -1,0 +1,138 @@
+<div class="team-detail-container">
+  <div class="back-link">
+    <a routerLink="/teams">← Back to Teams</a>
+  </div>
+
+  @if (isLoading) {
+    <p class="loading">Loading team details...</p>
+  }
+
+  @if (errorMessage) {
+    <div class="error">{{ errorMessage }}</div>
+  }
+
+  @if (successMessage) {
+    <div class="success">{{ successMessage }}</div>
+  }
+
+  @if (team) {
+    <div class="team-header">
+      <div class="header-content">
+        <h1>{{ team.name }}</h1>
+        <p class="description">{{ team.description || 'No description provided.' }}</p>
+      </div>
+      <div class="header-meta">
+        <span>Created by: <strong>{{ team.creator_username }}</strong></span>
+        <span>Created: <strong>{{ team.created_at | date:'mediumDate' }}</strong></span>
+      </div>
+    </div>
+
+    <div class="team-stats">
+      <div class="stat-box">
+        <span class="stat-value">{{ members.length }}</span>
+        <span class="stat-label">Members</span>
+      </div>
+      <div class="stat-box">
+        <span class="stat-value">{{ teamProjects.length }}</span>
+        <span class="stat-label">Projects</span>
+      </div>
+    </div>
+
+    <div class="team-content">
+      <div class="members-section">
+        <section class="members-card">
+          <h2>Team Members</h2>
+          @if (!members.length) {
+            <p class="empty-message">No members added yet. Add your first team member below.</p>
+          } @else {
+            <div class="members-grid">
+              @for (member of members; track member.id) {
+                <div class="member-card">
+                  <div class="member-info">
+                    <strong>{{ member.user_username }}</strong>
+                    <span class="member-role">{{ member.role }}</span>
+                  </div>
+                </div>
+              }
+            </div>
+          }
+
+          @if (canInviteMembers) {
+            <div class="invite-panel">
+              <div class="invite-panel-header">
+                <h3>Invite User</h3>
+                <button class="secondary-btn" (click)="toggleInviteForm()">
+                  {{ showInviteForm ? 'Cancel' : 'Invite' }}
+                </button>
+              </div>
+
+              @if (showInviteForm) {
+                <div class="invite-form">
+                  @if (inviteError) {
+                    <div class="inline-error">{{ inviteError }}</div>
+                  }
+
+                  <label>
+                    <span>Username</span>
+                    <input
+                      [(ngModel)]="newInvite.inviteeUsername"
+                      placeholder="Registered username"
+                      autocomplete="off" />
+                  </label>
+                  <label>
+                    <span>Message</span>
+                    <textarea
+                      [(ngModel)]="newInvite.message"
+                      placeholder="Optional note"
+                      rows="3"></textarea>
+                  </label>
+                  <button class="add-btn" (click)="sendInvitation()" [disabled]="isSendingInvitation">
+                    {{ isSendingInvitation ? 'Sending...' : 'Send Invitation' }}
+                  </button>
+                </div>
+              }
+            </div>
+          }
+
+          <div class="member-form">
+            <h3>Add Member</h3>
+            <label>
+              <span>User ID</span>
+              <input [(ngModel)]="newMember.user" placeholder="Enter user ID" />
+            </label>
+            <label>
+              <span>Role</span>
+              <select [(ngModel)]="newMember.role">
+                <option value="member">Member</option>
+                <option value="owner">Owner</option>
+              </select>
+            </label>
+            <button class="add-btn" (click)="addMember()">Add Member</button>
+          </div>
+        </section>
+      </div>
+
+      <div class="projects-section">
+        <section class="projects-card">
+          <h2>Team Projects</h2>
+          @if (!teamProjects.length) {
+            <p class="empty-message">No projects in this team yet. Create a project to get started.</p>
+          } @else {
+            <div class="projects-list">
+              @for (project of teamProjects; track project.id) {
+                <div class="project-preview">
+                  <h3>{{ project.title }}</h3>
+                  <p>{{ project.description || 'No description' }}</p>
+                  <div class="project-meta">
+                    <span>Deadline: {{ project.deadline | date:'mediumDate' }}</span>
+                  </div>
+                  <a class="view-link" [routerLink]="['/projects', project.id]">View Project</a>
+                </div>
+              }
+            </div>
+          }
+        </section>
+      </div>
+    </div>
+  }
+</div>
