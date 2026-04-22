@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CategoryService } from '../../services/category';
@@ -16,7 +16,7 @@ export class Categories implements OnInit {
 
   newCategory = { name: '', description: '' };
 
-  constructor(private categoryService: CategoryService) {}
+  constructor(private categoryService: CategoryService, private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
     this.loadCategories();
@@ -28,10 +28,12 @@ export class Categories implements OnInit {
       next: (data) => {
         this.categories = data;
         this.isLoading = false;
+        this.cdr.detectChanges();
       },
       error: () => {
         this.errorMessage = 'Failed to load categories';
         this.isLoading = false;
+        this.cdr.detectChanges();
       }
     });
   }
@@ -42,9 +44,11 @@ export class Categories implements OnInit {
       next: () => {
         this.loadCategories();
         this.newCategory = { name: '', description: '' };
+        this.cdr.detectChanges();
       },
       error: () => {
         this.errorMessage = 'Failed to create category';
+        this.cdr.detectChanges();
       }
     });
   }

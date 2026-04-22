@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { TaskService } from '../../services/task';
+import { CategoryService } from '../../services/category';
 
 @Component({
   selector: 'app-task-detail',
@@ -12,9 +13,11 @@ import { TaskService } from '../../services/task';
 })
 export class TaskDetail implements OnInit {
   task: any = null;
+  categories: any[] = [];
   errorMessage = '';
   isLoading = false;
   isEditing = false;
+  xpMessage = '';
 
   statusChoices = [
     { value: 'todo', label: 'To Do' },
@@ -22,10 +25,11 @@ export class TaskDetail implements OnInit {
     { value: 'done', label: 'Done' },
   ];
 
-  editTask = { title: '', description: '', deadline: '', status: 'todo', priority: false };
+  editTask = { title: '', description: '', deadline: '', status: 'todo', priority: false, category: null };
 
   constructor(
     private taskService: TaskService,
+    private categoryService: CategoryService,
     private route: ActivatedRoute,
     private router: Router,
     private cdr: ChangeDetectorRef
@@ -33,7 +37,21 @@ export class TaskDetail implements OnInit {
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
-    if (id) this.loadTask(+id);
+    if (id) {
+      this.loadTask(+id);
+      this.loadCategories();
+    }
+  }
+
+  loadCategories() {
+    this.categoryService.getCategories().subscribe({
+      next: (data) => {
+        this.categories = data;
+      },
+      error: () => {
+        this.errorMessage = 'Failed to load categories';
+      }
+    });
   }
 
   loadTask(id: number) {
@@ -46,7 +64,8 @@ export class TaskDetail implements OnInit {
           description: data.description,
           deadline: data.deadline,
           status: data.status,
-          priority: data.priority
+          priority: data.priority,
+          category: data.category || null,
         };
         this.isLoading = false;
         this.cdr.detectChanges();
@@ -71,13 +90,29 @@ export class TaskDetail implements OnInit {
   }
 
   changeStatus(status: string) {
+    const wasDone = this.task?.status === 'done';
     this.taskService.updateTask(this.task.id, { status }).subscribe({
       next: (data) => {
         this.task = data;
+        if (!wasDone && status === 'done') {
+          this.showXpMessage('+10 XP');
+        }
         this.cdr.detectChanges();
       },
       error: () => { this.errorMessage = 'Failed to update status'; }
     });
+  }
+
+  finishTask() {
+    this.changeStatus('done');
+  }
+
+  showXpMessage(message: string) {
+    this.xpMessage = message;
+    setTimeout(() => {
+      this.xpMessage = '';
+      this.cdr.detectChanges();
+    }, 5000);
   }
 
   deleteTask() {
