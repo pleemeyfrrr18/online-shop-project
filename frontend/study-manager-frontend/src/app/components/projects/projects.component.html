@@ -1,0 +1,143 @@
+<div class="projects-container">
+  <div class="section-header">
+    <h1>Projects</h1>
+    <p class="section-subtitle">Plan your study projects, assign them to teams, and track progress in one place.</p>
+  </div>
+
+  @if (errorMessage) {
+    <div class="error">{{ errorMessage }}</div>
+  }
+
+  @if (successMessage) {
+    <div class="success">{{ successMessage }}</div>
+  }
+
+  <div class="projects-grid">
+    <div class="sidebar-card new-project-form">
+      <h2>Create Project</h2>
+      <label>
+        <span>Title</span>
+        <input [(ngModel)]="newProject.title" placeholder="Project title" />
+      </label>
+      <label>
+        <span>Description</span>
+        <input [(ngModel)]="newProject.description" placeholder="Short description" />
+      </label>
+      <label>
+        <span>Deadline</span>
+        <input [(ngModel)]="newProject.deadline" type="date" />
+      </label>
+      <label>
+        <span>Team</span>
+        <select [(ngModel)]="newProject.team">
+          <option [ngValue]="null">Choose a team</option>
+          @for (team of teams; track team.id) {
+            <option [value]="team.id">{{ team.name }}</option>
+          }
+        </select>
+      </label>
+      <button class="primary-button" (click)="createProject()">Create Project</button>
+
+      <div class="task-create-panel">
+        <h2>Add Project Task</h2>
+        <label>
+          <span>Project</span>
+          <select [(ngModel)]="newProjectTask.project">
+            <option [ngValue]="null">Choose a project</option>
+            @for (project of projects; track project.id) {
+              <option [value]="project.id">{{ project.title }}</option>
+            }
+          </select>
+        </label>
+        <label>
+          <span>Task</span>
+          <input [(ngModel)]="newProjectTask.title" placeholder="Task title" />
+        </label>
+        <label>
+          <span>Description</span>
+          <input [(ngModel)]="newProjectTask.description" placeholder="Optional description" />
+        </label>
+        <label>
+          <span>Priority Points</span>
+          <input [(ngModel)]="newProjectTask.priority_points" type="number" min="0" max="100" />
+        </label>
+        <button class="primary-button" (click)="createSelectedProjectTask()">Add Task</button>
+      </div>
+    </div>
+
+    <div class="project-list-panel">
+      @if (isLoading) {
+        <p class="loading">Loading projects...</p>
+      }
+
+      @if (!projects.length && !isLoading) {
+        <div class="empty-state">No projects available yet. Create one to start organizing.</div>
+      }
+
+      <div class="project-list">
+        @for (project of projects; track project.id) {
+          <div class="project-card">
+            <div>
+              <h3>{{ project.title }}</h3>
+              <p>{{ project.description || 'No description yet.' }}</p>
+              <div class="project-meta">
+                <span>Team: {{ project.team_name || 'Unassigned' }}</span>
+                <span>Deadline: {{ project.deadline | date:'mediumDate' }}</span>
+                <span>Status: {{ project.status }}</span>
+                <span>Progress: {{ project.progress_percent }}%</span>
+              </div>
+
+              <div class="mini-progress">
+                <span [style.width.%]="project.progress_percent"></span>
+              </div>
+
+              <div class="inline-tasks">
+                <h4>Project Tasks</h4>
+                @if (getTasks(project).length) {
+                  @for (task of getTasks(project); track task.id) {
+                    <div class="mini-task">
+                      <span>{{ task.title }} · {{ task.status }}</span>
+                      <strong>{{ task.priority_points }} pts</strong>
+                      <button
+                        [disabled]="task.status === 'done'"
+                        (click)="markTaskDone(project, task)">
+                        Done
+                      </button>
+                      @if (xpMessages[task.id]) {
+                        <em>{{ xpMessages[task.id] }}</em>
+                      }
+                    </div>
+                  }
+                } @else {
+                  <p>No project tasks yet.</p>
+                }
+
+                <div class="quick-task-form">
+                  <input [(ngModel)]="taskForms[project.id].title" placeholder="Task title" />
+                  <input [(ngModel)]="taskForms[project.id].priority_points" type="number" min="0" max="100" />
+                  <button (click)="createTask(project)">Add Task</button>
+                </div>
+              </div>
+
+              <div class="invite-row">
+                <select [(ngModel)]="selectedFriendByProject[project.id]">
+                  <option value="">Invite friend</option>
+                  @for (friend of friends; track friend.id) {
+                    <option [value]="friend.id">{{ friend.username }}</option>
+                  }
+                </select>
+                <button (click)="sendProjectInvite(project)">Invite</button>
+              </div>
+            </div>
+            <div class="card-actions">
+              <a class="link-button" [routerLink]="['/projects', project.id]">View</a>
+              @if (isProjectOwner(project)) {
+                <button class="danger-button" (click)="deleteProject(project)">Delete</button>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>

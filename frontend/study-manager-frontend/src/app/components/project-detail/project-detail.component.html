@@ -1,0 +1,149 @@
+<div class="project-detail-container">
+  <div class="back-link">
+    <a routerLink="/projects">← Back to Projects</a>
+  </div>
+
+  @if (isLoading) {
+    <p class="loading">Loading project details...</p>
+  }
+
+  @if (errorMessage) {
+    <div class="error">{{ errorMessage }}</div>
+  }
+
+  @if (successMessage) {
+    <div class="success">{{ successMessage }}</div>
+  }
+
+  @if (project) {
+    <div class="project-header">
+      <div class="header-content">
+        <h1>{{ project.title }}</h1>
+        <p class="description">{{ project.description || 'No description provided.' }}</p>
+      </div>
+      <div class="header-meta">
+        <span>Team: <strong>{{ project.team_name }}</strong></span>
+        <span>Deadline: <strong>{{ project.deadline | date:'mediumDate' }}</strong></span>
+      </div>
+    </div>
+
+    <div class="project-stats">
+      <div class="stat-box">
+        <span class="stat-value">{{ tasks.length }}</span>
+        <span class="stat-label">Tasks</span>
+      </div>
+      <div class="stat-box">
+        <span class="stat-value">{{ getCompletedCount() }}</span>
+        <span class="stat-label">Completed</span>
+      </div>
+      <div class="stat-box">
+        <span class="stat-value">{{ getCompletedPoints() }}/100</span>
+        <span class="stat-label">Progress</span>
+      </div>
+    </div>
+
+    <div class="progress-bar">
+      <span [style.width.%]="getProgressPercent()"></span>
+    </div>
+
+    <div class="project-content">
+      <div class="new-task-section">
+        <section class="new-task-form-card">
+          <h2>Add New Task</h2>
+          <label>
+            <span>Title</span>
+            <input [(ngModel)]="newTask.title" placeholder="Task title" />
+          </label>
+          <label>
+            <span>Description</span>
+            <input [(ngModel)]="newTask.description" placeholder="Task description" />
+          </label>
+          <label>
+            <span>Deadline</span>
+            <input [(ngModel)]="newTask.deadline" type="date" />
+          </label>
+          <label>
+            <span>Priority Points</span>
+            <input [(ngModel)]="newTask.priority_points" type="number" min="0" max="100" />
+          </label>
+          <button class="create-btn" (click)="createTask()">Create Task</button>
+        </section>
+
+        <section class="invite-card">
+          <h2>Invite Players</h2>
+          <p class="invite-hint">Send this project offer to friends.</p>
+
+          @if (inviteError) {
+            <div class="inline-error">{{ inviteError }}</div>
+          }
+
+          @if (friends.length) {
+            <div class="invite-list">
+              @for (user of friends; track user.id) {
+                <div class="invite-row">
+                  <div class="player-info">
+                    <strong>{{ user.username }}</strong>
+                    @if (user.email) {
+                      <span>{{ user.email }}</span>
+                    }
+                  </div>
+                  <button
+                    class="invite-btn"
+                    [disabled]="!canInviteUser(user)"
+                    (click)="sendProjectInvitation(user)">
+                    {{ inviteButtonLabel(user) }}
+                  </button>
+                </div>
+              }
+            </div>
+          } @else {
+            <p class="empty-message">No friends available to invite yet.</p>
+          }
+        </section>
+      </div>
+
+      <div class="tasks-section">
+        <section class="project-tasks-card">
+          <h2>Project Tasks ({{ tasks.length }})</h2>
+          @if (!tasks.length) {
+            <p class="empty-message">No tasks added yet. Create a task to get started.</p>
+          } @else {
+            <div class="tasks-grid">
+              @for (task of tasks; track task.id) {
+                <div class="project-task-card" [ngClass]="'status-' + task.status">
+                  <div class="task-header">
+                    <h3>{{ task.title }}</h3>
+                    <span class="status-badge">{{ task.status | uppercase }}</span>
+                  </div>
+                  <p class="task-description">{{ task.description || 'No description' }}</p>
+                  <div class="task-meta">
+                    <span>Assigned: {{ task.assigned_user_username || 'Unassigned' }}</span>
+                    <span>Priority: {{ task.priority_points }} points</span>
+                    @if (task.completed_by_username) {
+                      <span>Completed by: {{ task.completed_by_username }}</span>
+                    }
+                  </div>
+                  @if (isProjectOwner()) {
+                    <div class="priority-edit">
+                      <input [(ngModel)]="task.priority_points" type="number" min="0" max="100" />
+                      <button (click)="updateTaskPriority(task)">Update Points</button>
+                      <button class="danger" (click)="deleteTask(task)">Delete</button>
+                    </div>
+                  }
+                  @if (xpMessages[task.id]) {
+                    <span class="xp-pop">{{ xpMessages[task.id] }}</span>
+                  }
+                  <div class="task-actions">
+                    <button [disabled]="task.status === 'todo'" (click)="updateTaskStatus(task, 'todo')" class="action-btn">To Do</button>
+                    <button [disabled]="task.status === 'doing'" (click)="updateTaskStatus(task, 'doing')" class="action-btn">Doing</button>
+                    <button [disabled]="task.status === 'done'" (click)="updateTaskStatus(task, 'done')" class="action-btn done">Done</button>
+                  </div>
+                </div>
+              }
+            </div>
+          }
+        </section>
+      </div>
+    </div>
+  }
+</div>
