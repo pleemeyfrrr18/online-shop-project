@@ -1,0 +1,2237 @@
+{
+  "info": {
+    "_postman_id": "c515a905-8db0-4a8f-baf9-0bd9b86645b6",
+    "name": "Study Manager API",
+    "description": "Postman collection for the Study Manager Django REST API. Start the Django server, run the Login request, and Postman will save the JWT access token automatically.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{accessToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://127.0.0.1:8000",
+      "type": "string"
+    },
+    {
+      "key": "accessToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "refreshToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "categoryId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "taskId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "friendUserId",
+      "value": "2",
+      "type": "string"
+    },
+    {
+      "key": "friendUsername",
+      "value": "student2",
+      "type": "string"
+    },
+    {
+      "key": "friendRequestId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "teamId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "projectId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "projectTaskId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "invitationId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "joinRequestId",
+      "value": "1",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "description": "Authentication requests. Register and login do not require a JWT token.",
+      "item": [
+        {
+          "name": "Register User",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"student1\",\n  \"email\": \"student1@example.com\",\n  \"password\": \"StrongPass123!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users/register/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "register"
+              ]
+            },
+            "description": "Creates a new registered user."
+          },
+          "response": [
+            {
+              "name": "201 Created",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"username\": \"student1\",\n  \"email\": \"student1@example.com\",\n  \"password\": \"StrongPass123!\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/users/register/"
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"User registered successfully.\",\n  \"user\": {\n    \"id\": 1,\n    \"username\": \"student1\",\n    \"email\": \"student1@example.com\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Login User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "  const data = pm.response.json();",
+                  "  pm.collectionVariables.set('accessToken', data.access);",
+                  "  pm.collectionVariables.set('refreshToken', data.refresh);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"student1\",\n  \"password\": \"StrongPass123!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users/login/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "login"
+              ]
+            },
+            "description": "Logs in and saves accessToken and refreshToken collection variables."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"username\": \"student1\",\n  \"password\": \"StrongPass123!\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/users/login/"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Login successful.\",\n  \"access\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.example-access-token\",\n  \"refresh\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.example-refresh-token\",\n  \"user\": {\n    \"id\": 1,\n    \"username\": \"student1\",\n    \"email\": \"student1@example.com\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Logout User",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/users/logout/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "logout"
+              ]
+            },
+            "description": "Logs out on the client side. Requires Authorization: Bearer {{accessToken}}."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/users/logout/"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Logout successful on client side.\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Current User Profile",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/users/me/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "me"
+              ]
+            },
+            "description": "Returns current user data plus XP and level profile."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/users/me/"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": 1,\n  \"username\": \"student1\",\n  \"email\": \"student1@example.com\",\n  \"profile\": {\n    \"xp\": 30,\n    \"level\": 1,\n    \"created_at\": \"2026-04-22T10:00:00Z\",\n    \"updated_at\": \"2026-04-22T10:15:00Z\"\n  }\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Tasks and Categories",
+      "description": "CRUD operations for personal categories and tasks.",
+      "item": [
+        {
+          "name": "List Categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/tasks/categories/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "tasks",
+                "categories"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/tasks/categories/"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"id\": 1,\n    \"name\": \"Study\",\n    \"description\": \"University assignments\",\n    \"user\": 1,\n    \"created_at\": \"2026-04-22T10:05:00Z\"\n  }\n]"
+            }
+          ]
+        },
+        {
+          "name": "Create Category",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  pm.collectionVariables.set('categoryId', pm.response.json().id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Study\",\n  \"description\": \"University assignments\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/tasks/categories/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "tasks",
+                "categories"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "201 Created",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Study\",\n  \"description\": \"University assignments\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/tasks/categories/"
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": 1,\n  \"name\": \"Study\",\n  \"description\": \"University assignments\",\n  \"user\": 1,\n  \"created_at\": \"2026-04-22T10:05:00Z\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Create Task",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  pm.collectionVariables.set('taskId', pm.response.json().id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Read Django REST Framework chapter\",\n  \"description\": \"Prepare notes for the web class.\",\n  \"deadline\": \"2026-05-10\",\n  \"status\": \"todo\",\n  \"priority\": true,\n  \"category\": {{categoryId}}\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/tasks/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "tasks"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "201 Created",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"title\": \"Read Django REST Framework chapter\",\n  \"description\": \"Prepare notes for the web class.\",\n  \"deadline\": \"2026-05-10\",\n  \"status\": \"todo\",\n  \"priority\": true,\n  \"category\": 1\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/tasks/"
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": 1,\n  \"title\": \"Read Django REST Framework chapter\",\n  \"description\": \"Prepare notes for the web class.\",\n  \"deadline\": \"2026-05-10\",\n  \"status\": \"todo\",\n  \"priority\": true,\n  \"created_at\": \"2026-04-22T10:10:00Z\",\n  \"user\": 1,\n  \"category\": 1,\n  \"category_name\": \"Study\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "List Tasks",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/tasks/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "tasks"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/tasks/"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"id\": 1,\n    \"title\": \"Read Django REST Framework chapter\",\n    \"description\": \"Prepare notes for the web class.\",\n    \"deadline\": \"2026-05-10\",\n    \"status\": \"todo\",\n    \"priority\": true,\n    \"created_at\": \"2026-04-22T10:10:00Z\",\n    \"user\": 1,\n    \"category\": 1,\n    \"category_name\": \"Study\"\n  }\n]"
+            }
+          ]
+        },
+        {
+          "name": "Get Task Details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/tasks/{{taskId}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "tasks",
+                "{{taskId}}"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/tasks/1/"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": 1,\n  \"title\": \"Read Django REST Framework chapter\",\n  \"description\": \"Prepare notes for the web class.\",\n  \"deadline\": \"2026-05-10\",\n  \"status\": \"todo\",\n  \"priority\": true,\n  \"created_at\": \"2026-04-22T10:10:00Z\",\n  \"user\": 1,\n  \"category\": 1,\n  \"category_name\": \"Study\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Finish Task",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"done\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/tasks/{{taskId}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "tasks",
+                "{{taskId}}"
+              ]
+            },
+            "description": "Marks a personal task as done and awards XP on the backend."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"status\": \"done\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/tasks/1/"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": 1,\n  \"title\": \"Read Django REST Framework chapter\",\n  \"description\": \"Prepare notes for the web class.\",\n  \"deadline\": \"2026-05-10\",\n  \"status\": \"done\",\n  \"priority\": true,\n  \"created_at\": \"2026-04-22T10:10:00Z\",\n  \"user\": 1,\n  \"category\": 1,\n  \"category_name\": \"Study\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Delete Task",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/tasks/{{taskId}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "tasks",
+                "{{taskId}}"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "204 No Content",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/tasks/1/"
+                }
+              },
+              "status": "No Content",
+              "code": 204,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Friends",
+      "description": "Registered users, friend requests, accept/decline flow, and friends list.",
+      "item": [
+        {
+          "name": "List Registered Users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/users/users/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "users"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/users/users/"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"id\": 2,\n    \"username\": \"student2\",\n    \"email\": \"student2@example.com\"\n  }\n]"
+            }
+          ]
+        },
+        {
+          "name": "Send Friend Request",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  pm.collectionVariables.set('friendRequestId', pm.response.json().id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"to_username\": \"{{friendUsername}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users/friend-requests/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "friend-requests"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "201 Created",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"to_username\": \"student2\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/users/friend-requests/"
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": 1,\n  \"from_user\": 1,\n  \"from_user_username\": \"student1\",\n  \"to_user\": 2,\n  \"to_user_username\": \"student2\",\n  \"status\": \"pending\",\n  \"created_at\": \"2026-04-22T10:20:00Z\",\n  \"responded_at\": null\n}"
+            }
+          ]
+        },
+        {
+          "name": "List Friend Requests",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/users/friend-requests/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "friend-requests"
+              ]
+            },
+            "description": "Returns received pending requests, sent requests, and updates for accepted/declined requests."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/users/friend-requests/"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"received\": [],\n  \"sent\": [\n    {\n      \"id\": 1,\n      \"from_user\": 1,\n      \"from_user_username\": \"student1\",\n      \"to_user\": 2,\n      \"to_user_username\": \"student2\",\n      \"status\": \"pending\",\n      \"created_at\": \"2026-04-22T10:20:00Z\",\n      \"responded_at\": null\n    }\n  ],\n  \"updates\": []\n}"
+            }
+          ]
+        },
+        {
+          "name": "Accept Friend Request",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"accept\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users/friend-requests/{{friendRequestId}}/action/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "friend-requests",
+                "{{friendRequestId}}",
+                "action"
+              ]
+            },
+            "description": "Run this while logged in as the user who received the friend request."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"action\": \"accept\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/users/friend-requests/1/action/"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": \"You are now friends with student1.\",\n  \"request\": {\n    \"id\": 1,\n    \"from_user\": 1,\n    \"from_user_username\": \"student1\",\n    \"to_user\": 2,\n    \"to_user_username\": \"student2\",\n    \"status\": \"accepted\",\n    \"created_at\": \"2026-04-22T10:20:00Z\",\n    \"responded_at\": \"2026-04-22T10:25:00Z\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Decline Friend Request",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"decline\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users/friend-requests/{{friendRequestId}}/action/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "friend-requests",
+                "{{friendRequestId}}",
+                "action"
+              ]
+            },
+            "description": "Alternative to accept. Run while logged in as the receiver."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"action\": \"decline\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/users/friend-requests/1/action/"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": \"You declined student1's friend request.\",\n  \"request\": {\n    \"id\": 1,\n    \"from_user\": 1,\n    \"from_user_username\": \"student1\",\n    \"to_user\": 2,\n    \"to_user_username\": \"student2\",\n    \"status\": \"declined\",\n    \"created_at\": \"2026-04-22T10:20:00Z\",\n    \"responded_at\": \"2026-04-22T10:25:00Z\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "List Friends",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/users/friends/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "friends"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/users/friends/"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"id\": 1,\n    \"friend\": {\n      \"id\": 2,\n      \"username\": \"student2\",\n      \"email\": \"student2@example.com\"\n    },\n    \"created_at\": \"2026-04-22T10:25:00Z\"\n  }\n]"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Teams, Projects, Project Tasks, Invitations",
+      "description": "Team CRUD, project CRUD, weighted project tasks, friend-only invitations, and accept/decline flows.",
+      "item": [
+        {
+          "name": "Create Team",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  pm.collectionVariables.set('teamId', pm.response.json().id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Web Project Team\",\n  \"description\": \"Team for the semester web project.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/teams/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "teams"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "201 Created",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Web Project Team\",\n  \"description\": \"Team for the semester web project.\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/teams/"
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": 1,\n  \"name\": \"Web Project Team\",\n  \"description\": \"Team for the semester web project.\",\n  \"creator\": 1,\n  \"creator_username\": \"student1\",\n  \"created_at\": \"2026-04-22T10:30:00Z\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "List Teams",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/teams/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "teams"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/teams/"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"id\": 1,\n    \"name\": \"Web Project Team\",\n    \"description\": \"Team for the semester web project.\",\n    \"creator\": 1,\n    \"creator_username\": \"student1\",\n    \"created_at\": \"2026-04-22T10:30:00Z\"\n  }\n]"
+            }
+          ]
+        },
+        {
+          "name": "List Team Members",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/teams/{{teamId}}/members/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "teams",
+                "{{teamId}}",
+                "members"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/teams/1/members/"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"id\": 1,\n    \"team\": 1,\n    \"team_name\": \"Web Project Team\",\n    \"user\": 1,\n    \"user_username\": \"student1\",\n    \"role\": \"owner\"\n  }\n]"
+            }
+          ]
+        },
+        {
+          "name": "Create Project",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  pm.collectionVariables.set('projectId', pm.response.json().id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Study Manager Final Demo\",\n  \"description\": \"Prepare final project features and presentation.\",\n  \"deadline\": \"2026-05-20\",\n  \"team\": {{teamId}}\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/teams/projects/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "teams",
+                "projects"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "201 Created",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"title\": \"Study Manager Final Demo\",\n  \"description\": \"Prepare final project features and presentation.\",\n  \"deadline\": \"2026-05-20\",\n  \"team\": 1\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/teams/projects/"
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": 1,\n  \"title\": \"Study Manager Final Demo\",\n  \"description\": \"Prepare final project features and presentation.\",\n  \"deadline\": \"2026-05-20\",\n  \"status\": \"active\",\n  \"progress_percent\": 0,\n  \"team\": 1,\n  \"team_name\": \"Web Project Team\",\n  \"created_by\": 1,\n  \"created_by_username\": \"student1\",\n  \"created_at\": \"2026-04-22T10:35:00Z\",\n  \"completed_at\": null\n}"
+            }
+          ]
+        },
+        {
+          "name": "List Projects",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/teams/projects/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "teams",
+                "projects"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/teams/projects/"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"id\": 1,\n    \"title\": \"Study Manager Final Demo\",\n    \"description\": \"Prepare final project features and presentation.\",\n    \"deadline\": \"2026-05-20\",\n    \"status\": \"active\",\n    \"progress_percent\": 0,\n    \"team\": 1,\n    \"team_name\": \"Web Project Team\",\n    \"created_by\": 1,\n    \"created_by_username\": \"student1\",\n    \"created_at\": \"2026-04-22T10:35:00Z\",\n    \"completed_at\": null\n  }\n]"
+            }
+          ]
+        },
+        {
+          "name": "Get Project Details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/teams/projects/{{projectId}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "teams",
+                "projects",
+                "{{projectId}}"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/teams/projects/1/"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": 1,\n  \"title\": \"Study Manager Final Demo\",\n  \"description\": \"Prepare final project features and presentation.\",\n  \"deadline\": \"2026-05-20\",\n  \"status\": \"active\",\n  \"progress_percent\": 0,\n  \"team\": 1,\n  \"team_name\": \"Web Project Team\",\n  \"created_by\": 1,\n  \"created_by_username\": \"student1\",\n  \"created_at\": \"2026-04-22T10:35:00Z\",\n  \"completed_at\": null\n}"
+            }
+          ]
+        },
+        {
+          "name": "Create Project Task",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  pm.collectionVariables.set('projectTaskId', pm.response.json().id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Build Postman collection\",\n  \"description\": \"Add example API requests for the teacher.\",\n  \"status\": \"todo\",\n  \"deadline\": \"2026-05-01\",\n  \"priority_points\": 100,\n  \"assigned_user\": {{friendUserId}}\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/teams/projects/{{projectId}}/tasks/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "teams",
+                "projects",
+                "{{projectId}}",
+                "tasks"
+              ]
+            },
+            "description": "Creates a weighted task for a concrete project. If this is the only project task, the backend normalizes it to 100 priority points."
+          },
+          "response": [
+            {
+              "name": "201 Created",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"title\": \"Build Postman collection\",\n  \"description\": \"Add example API requests for the teacher.\",\n  \"status\": \"todo\",\n  \"deadline\": \"2026-05-01\",\n  \"priority_points\": 100,\n  \"assigned_user\": 2\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/teams/projects/1/tasks/"
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": 1,\n  \"title\": \"Build Postman collection\",\n  \"description\": \"Add example API requests for the teacher.\",\n  \"status\": \"todo\",\n  \"deadline\": \"2026-05-01\",\n  \"priority_points\": 100,\n  \"project\": 1,\n  \"project_title\": \"Study Manager Final Demo\",\n  \"assigned_user\": 2,\n  \"assigned_user_username\": \"student2\",\n  \"completed_by\": null,\n  \"completed_by_username\": null,\n  \"created_by\": 1,\n  \"created_by_username\": \"student1\",\n  \"created_at\": \"2026-04-22T10:40:00Z\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "List Project Tasks",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/teams/projects/{{projectId}}/tasks/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "teams",
+                "projects",
+                "{{projectId}}",
+                "tasks"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/teams/projects/1/tasks/"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"id\": 1,\n    \"title\": \"Build Postman collection\",\n    \"description\": \"Add example API requests for the teacher.\",\n    \"status\": \"todo\",\n    \"deadline\": \"2026-05-01\",\n    \"priority_points\": 100,\n    \"project\": 1,\n    \"project_title\": \"Study Manager Final Demo\",\n    \"assigned_user\": 2,\n    \"assigned_user_username\": \"student2\",\n    \"completed_by\": null,\n    \"completed_by_username\": null,\n    \"created_by\": 1,\n    \"created_by_username\": \"student1\",\n    \"created_at\": \"2026-04-22T10:40:00Z\"\n  }\n]"
+            }
+          ]
+        },
+        {
+          "name": "Finish Project Task",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"done\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/teams/project-tasks/{{projectTaskId}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "teams",
+                "project-tasks",
+                "{{projectTaskId}}"
+              ]
+            },
+            "description": "Marks a project task as done. The backend updates completed_by, project progress, and XP."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"status\": \"done\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/teams/project-tasks/1/"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": 1,\n  \"title\": \"Build Postman collection\",\n  \"description\": \"Add example API requests for the teacher.\",\n  \"status\": \"done\",\n  \"deadline\": \"2026-05-01\",\n  \"priority_points\": 100,\n  \"project\": 1,\n  \"project_title\": \"Study Manager Final Demo\",\n  \"assigned_user\": 2,\n  \"assigned_user_username\": \"student2\",\n  \"completed_by\": 1,\n  \"completed_by_username\": \"student1\",\n  \"created_by\": 1,\n  \"created_by_username\": \"student1\",\n  \"created_at\": \"2026-04-22T10:40:00Z\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Send Team Invitation",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  pm.collectionVariables.set('invitationId', pm.response.json().id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"invitee_username\": \"{{friendUsername}}\",\n  \"team\": {{teamId}},\n  \"message\": \"Join my study team.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/teams/invitations/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "teams",
+                "invitations"
+              ]
+            },
+            "description": "Only team owners can send team invitations, and the invitee must already be a friend."
+          },
+          "response": [
+            {
+              "name": "201 Created",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"invitee_username\": \"student2\",\n  \"team\": 1,\n  \"message\": \"Join my study team.\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/teams/invitations/"
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": 1,\n  \"inviter\": 1,\n  \"inviter_username\": \"student1\",\n  \"invitee\": 2,\n  \"invitee_username\": \"student2\",\n  \"team\": 1,\n  \"team_name\": \"Web Project Team\",\n  \"project\": null,\n  \"project_title\": null,\n  \"project_description\": null,\n  \"project_deadline\": null,\n  \"invitation_type\": \"team\",\n  \"status\": \"pending\",\n  \"message\": \"Join my study team.\",\n  \"created_at\": \"2026-04-22T10:45:00Z\",\n  \"updated_at\": \"2026-04-22T10:45:00Z\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Send Project Invitation",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  pm.collectionVariables.set('invitationId', pm.response.json().id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"invitee_username\": \"{{friendUsername}}\",\n  \"project\": {{projectId}},\n  \"message\": \"Please join this project.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/teams/invitations/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "teams",
+                "invitations"
+              ]
+            },
+            "description": "Project invitation includes project title, description, and deadline in the response. Accepting it adds the invitee to the project team."
+          },
+          "response": [
+            {
+              "name": "201 Created",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"invitee_username\": \"student2\",\n  \"project\": 1,\n  \"message\": \"Please join this project.\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/teams/invitations/"
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": 2,\n  \"inviter\": 1,\n  \"inviter_username\": \"student1\",\n  \"invitee\": 2,\n  \"invitee_username\": \"student2\",\n  \"team\": 1,\n  \"team_name\": \"Web Project Team\",\n  \"project\": 1,\n  \"project_title\": \"Study Manager Final Demo\",\n  \"project_description\": \"Prepare final project features and presentation.\",\n  \"project_deadline\": \"2026-05-20\",\n  \"invitation_type\": \"project\",\n  \"status\": \"pending\",\n  \"message\": \"Please join this project.\",\n  \"created_at\": \"2026-04-22T10:50:00Z\",\n  \"updated_at\": \"2026-04-22T10:50:00Z\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "List Sent Invitations",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/teams/invitations/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "teams",
+                "invitations"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/teams/invitations/"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"id\": 2,\n    \"inviter\": 1,\n    \"inviter_username\": \"student1\",\n    \"invitee\": 2,\n    \"invitee_username\": \"student2\",\n    \"team\": 1,\n    \"team_name\": \"Web Project Team\",\n    \"project\": 1,\n    \"project_title\": \"Study Manager Final Demo\",\n    \"project_description\": \"Prepare final project features and presentation.\",\n    \"project_deadline\": \"2026-05-20\",\n    \"invitation_type\": \"project\",\n    \"status\": \"pending\",\n    \"message\": \"Please join this project.\",\n    \"created_at\": \"2026-04-22T10:50:00Z\",\n    \"updated_at\": \"2026-04-22T10:50:00Z\"\n  }\n]"
+            }
+          ]
+        },
+        {
+          "name": "List Received Invitations",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/teams/received-invitations/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "teams",
+                "received-invitations"
+              ]
+            },
+            "description": "Run while logged in as the invited user."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/teams/received-invitations/"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"id\": 2,\n    \"inviter\": 1,\n    \"inviter_username\": \"student1\",\n    \"invitee\": 2,\n    \"invitee_username\": \"student2\",\n    \"team\": 1,\n    \"team_name\": \"Web Project Team\",\n    \"project\": 1,\n    \"project_title\": \"Study Manager Final Demo\",\n    \"project_description\": \"Prepare final project features and presentation.\",\n    \"project_deadline\": \"2026-05-20\",\n    \"invitation_type\": \"project\",\n    \"status\": \"pending\",\n    \"message\": \"Please join this project.\",\n    \"created_at\": \"2026-04-22T10:50:00Z\",\n    \"updated_at\": \"2026-04-22T10:50:00Z\"\n  }\n]"
+            }
+          ]
+        },
+        {
+          "name": "Accept Invitation",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"accept\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/teams/invitations/{{invitationId}}/action/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "teams",
+                "invitations",
+                "{{invitationId}}",
+                "action"
+              ]
+            },
+            "description": "Run while logged in as the invited user. Accepting a project invitation appends that project to the user's project list through team membership."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"action\": \"accept\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/teams/invitations/2/action/"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": \"Invitation accepted. Study Manager Final Demo has been added to your projects.\",\n  \"status\": \"accepted\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Decline Invitation",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"decline\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/teams/invitations/{{invitationId}}/action/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "teams",
+                "invitations",
+                "{{invitationId}}",
+                "action"
+              ]
+            },
+            "description": "Alternative to accept. Run while logged in as the invited user."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"action\": \"decline\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/teams/invitations/2/action/"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": \"Invitation declined.\",\n  \"status\": \"declined\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Delete Project Task",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/teams/project-tasks/{{projectTaskId}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "teams",
+                "project-tasks",
+                "{{projectTaskId}}"
+              ]
+            },
+            "description": "Only the project owner can delete project tasks."
+          },
+          "response": [
+            {
+              "name": "204 No Content",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/teams/project-tasks/1/"
+                }
+              },
+              "status": "No Content",
+              "code": 204,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": ""
+            }
+          ]
+        },
+        {
+          "name": "Delete Project",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/teams/projects/{{projectId}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "teams",
+                "projects",
+                "{{projectId}}"
+              ]
+            },
+            "description": "Only the project owner can delete a project."
+          },
+          "response": [
+            {
+              "name": "204 No Content",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/teams/projects/1/"
+                }
+              },
+              "status": "No Content",
+              "code": 204,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": ""
+            }
+          ]
+        },
+        {
+          "name": "Delete Team",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/teams/{{teamId}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "teams",
+                "{{teamId}}"
+              ]
+            },
+            "description": "Only the team owner can delete a team."
+          },
+          "response": [
+            {
+              "name": "204 No Content",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/teams/1/"
+                }
+              },
+              "status": "No Content",
+              "code": 204,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Engagement",
+      "description": "XP, badges, activity feed, and smart suggestions.",
+      "item": [
+        {
+          "name": "Engagement Overview",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/engagement/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "engagement"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/engagement/"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"user\": {\n    \"id\": 1,\n    \"username\": \"student1\",\n    \"email\": \"student1@example.com\"\n  },\n  \"profile\": {\n    \"xp\": 42,\n    \"level\": 1,\n    \"created_at\": \"2026-04-22T10:00:00Z\",\n    \"updated_at\": \"2026-04-22T10:45:00Z\"\n  },\n  \"badges\": []\n}"
+            }
+          ]
+        },
+        {
+          "name": "Activity Feed",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/engagement/activity/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "engagement",
+                "activity"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/engagement/activity/"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"id\": 1,\n    \"actor\": {\n      \"id\": 1,\n      \"username\": \"student1\",\n      \"email\": \"student1@example.com\"\n    },\n    \"action_type\": \"task_completed\",\n    \"message\": \"Task completed: \\\"Read Django REST Framework chapter\\\".\",\n    \"xp_change\": 10,\n    \"team\": null,\n    \"project\": null,\n    \"task\": 1,\n    \"project_task\": null,\n    \"created_at\": \"2026-04-22T10:15:00Z\"\n  }\n]"
+            }
+          ]
+        },
+        {
+          "name": "Badges",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/engagement/badges/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "engagement",
+                "badges"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/engagement/badges/"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"id\": 1,\n    \"badge\": {\n      \"id\": 1,\n      \"code\": \"first_task\",\n      \"name\": \"First Task\",\n      \"description\": \"Completed the first task.\",\n      \"xp_threshold\": 10,\n      \"level_threshold\": 1,\n      \"created_at\": \"2026-04-22T10:00:00Z\"\n    },\n    \"awarded_at\": \"2026-04-22T10:15:00Z\"\n  }\n]"
+            }
+          ]
+        },
+        {
+          "name": "Smart Suggestions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/engagement/suggestions/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "engagement",
+                "suggestions"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/engagement/suggestions/"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"type\": \"task\",\n    \"title\": \"Finish pending tasks\",\n    \"message\": \"You have tasks waiting for completion.\",\n    \"priority\": \"medium\",\n    \"source\": \"tasks\",\n    \"object_id\": 1\n  }\n]"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Legacy Join Requests",
+      "description": "These backend endpoints still exist, although the Angular UI no longer has a Join Requests section.",
+      "item": [
+        {
+          "name": "Create Join Request",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  pm.collectionVariables.set('joinRequestId', pm.response.json().id || pm.collectionVariables.get('joinRequestId'));",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"request_type\": \"project\",\n  \"project\": {{projectId}},\n  \"message\": \"I would like to join this project.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/teams/join-requests/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "teams",
+                "join-requests"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "201 Created",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"request_type\": \"project\",\n  \"project\": 1,\n  \"message\": \"I would like to join this project.\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/teams/join-requests/"
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"request_type\": \"project\",\n  \"team\": null,\n  \"project\": 1,\n  \"message\": \"I would like to join this project.\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Accept Join Request",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"accept\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/teams/join-requests/{{joinRequestId}}/action/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "teams",
+                "join-requests",
+                "{{joinRequestId}}",
+                "action"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"action\": \"accept\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/teams/join-requests/1/action/"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": \"Join request accepted. student2 has been added to the team.\",\n  \"status\": \"accepted\"\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
