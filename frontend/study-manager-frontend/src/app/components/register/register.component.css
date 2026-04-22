@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 .auth-container { display:flex; align-items:center; justify-content:center; min-height:80vh; }
 .auth-card { width:100%; max-width:420px; padding:24px; background:#fff; border-radius:12px; box-shadow:0 12px 30px rgba(0,0,0,.08); }
 .form-group { margin-bottom:16px; }
@@ -6,3 +7,113 @@ input { width:100%; padding:10px 12px; border:1px solid #ccc; border-radius:8px;
 button { width:100%; padding:12px 14px; background:#1976d2; color:#fff; border:none; border-radius:8px; cursor:pointer; }
 button:disabled { opacity:.7; }
 .error-message { color:#c62828; margin-bottom:16px; }
+=======
+.auth-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #F5F7F9;
+  background-image: repeating-radial-gradient(circle at 0 0, transparent 0, #F5F7F9 60px), repeating-linear-gradient(#7EB5A633, #7EB5A633);
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+  padding: 48px 40px;
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 4px 24px rgba(107, 159, 174, 0.12);
+  border: 1px solid #E2EBEE;
+}
+
+.auth-card h2 {
+  text-align: center;
+  color: #2D3E45;
+  margin-bottom: 28px;
+  font-size: 24px;
+  font-weight: 500;
+}
+
+.form-group {
+  margin-bottom: 18px;
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  font-size: 14px;
+  color: #2D3E45;
+}
+
+input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1.5px solid #E2EBEE;
+  border-radius: 12px;
+  font-size: 15px;
+  background: #F5F7F9;
+  color: #2D3E45;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+}
+
+input:focus {
+  border-color: #6B9FAE;
+  box-shadow: 0 0 0 3px rgba(107, 159, 174, 0.12);
+  background: #ffffff;
+}
+
+button {
+  width: 100%;
+  padding: 13px;
+  background: #6B9FAE;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+  font-family: 'Inter', sans-serif;
+  margin-top: 4px;
+}
+
+button:hover {
+  background: #4A7F8E;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.error-message {
+  background: #FEF0EE;
+  color: #B85450;
+  padding: 12px 16px;
+  border-radius: 10px;
+  margin-bottom: 16px;
+  font-size: 14px;
+  border: 1px solid #F5C5C0;
+}
+
+a {
+  color: #6B9FAE;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #4A7F8E;
+}
+
+p {
+  text-align: center;
+  margin-top: 16px;
+  font-size: 14px;
+  color: #607B82;
+}
+>>>>>>> 47e91a916b495777a4aeeaa8eb5e3974ee547007
