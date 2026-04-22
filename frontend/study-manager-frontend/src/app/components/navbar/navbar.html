@@ -1,8 +1,14 @@
 <nav class="navbar">
-  <div class="nav-brand">📚 Study Manager</div>
+  <a class="nav-brand" routerLink="/about">📚 Study Manager</a>
   <div class="nav-links">
     <a routerLink="/tasks" routerLinkActive="active">Tasks</a>
     <a routerLink="/categories" routerLinkActive="active">Categories</a>
+    <a routerLink="/teams" routerLinkActive="active">Teams</a>
+    <a routerLink="/projects" routerLinkActive="active">Projects</a>
+    <a routerLink="/engagement" routerLinkActive="active">Engagement</a>
+    <a routerLink="/invitations" routerLinkActive="active">Invitations</a>
+    <a routerLink="/friends" routerLinkActive="active">Friends</a>
+    <a routerLink="/profile" routerLinkActive="active">Profile</a>
     <div class="xp-badge">⭐ {{ xp }} XP · Lv.{{ level }}</div>
     <button (click)="logout()">Logout</button>
   </div>

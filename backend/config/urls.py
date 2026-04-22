@@ -17,10 +17,14 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+from tasks.views import CategoryListCreateAPIView, CategoryDetailAPIView
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/users/', include('users.urls')),
     path('api/tasks/', include('tasks.urls')),
+    path('api/categories/', CategoryListCreateAPIView.as_view()),
+    path('api/categories/<int:pk>/', CategoryDetailAPIView.as_view()),
     path('api/teams/', include('teams.urls')),
     path('api/engagement/', include('engagement.urls')),
 ]

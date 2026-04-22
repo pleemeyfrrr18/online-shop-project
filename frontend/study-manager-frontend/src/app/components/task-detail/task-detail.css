@@ -38,6 +38,17 @@ h1 {
   margin-bottom: 6px;
 }
 
+.xp-pop {
+  display: inline-block;
+  background: #EDF8F0;
+  color: #246B32;
+  border: 1px solid #BFE4C7;
+  border-radius: 999px;
+  padding: 5px 10px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
 .error {
   background: #FEF0EE;
   color: #B85450;
@@ -85,6 +96,7 @@ h1 {
   margin-top: 24px;
 }
 
+.finish-btn,
 .edit-btn {
   padding: 10px 24px;
   background: #6B9FAE;
@@ -100,6 +112,11 @@ h1 {
 
 .edit-btn:hover {
   background: #4A7F8E;
+}
+
+.finish-btn:disabled {
+  background: #AFC8D0;
+  cursor: not-allowed;
 }
 
 .delete-btn {

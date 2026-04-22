@@ -14,6 +14,9 @@
       <p class="description">{{ task.description }}</p>
       <p class="deadline">📅 Deadline: {{ task.deadline || 'No deadline' }}</p>
       <p class="priority">⭐ Priority: {{ task.priority ? 'High' : 'Normal' }}</p>
+      @if (xpMessage) {
+        <span class="xp-pop">{{ xpMessage }}</span>
+      }
 
       <div class="status-bar">
         @for (s of statusChoices; track s.value) {
@@ -25,8 +28,10 @@
           </button>
         }
       </div>
+      <p class="category">Category: {{ task.category_name || 'None' }}</p>
 
       <div class="actions">
+        <button (click)="finishTask()" [disabled]="task.status === 'done'" class="finish-btn">Finish</button>
         <button (click)="isEditing = true" class="edit-btn">Edit</button>
         <button (click)="deleteTask()" class="delete-btn">Delete</button>
       </div>
@@ -35,6 +40,12 @@
       <input [(ngModel)]="editTask.title" placeholder="Title" />
       <input [(ngModel)]="editTask.description" placeholder="Description" />
       <input [(ngModel)]="editTask.deadline" type="date" />
+      <select [(ngModel)]="editTask.category">
+        <option [ngValue]="null">No category</option>
+        @for (category of categories; track category.id) {
+          <option [value]="category.id">{{ category.name }}</option>
+        }
+      </select>
       <select [(ngModel)]="editTask.status">
         @for (s of statusChoices; track s.value) {
           <option [value]="s.value">{{ s.label }}</option>

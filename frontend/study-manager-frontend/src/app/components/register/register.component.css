@@ -1,0 +1,8 @@
+.auth-container { display:flex; align-items:center; justify-content:center; min-height:80vh; }
+.auth-card { width:100%; max-width:420px; padding:24px; background:#fff; border-radius:12px; box-shadow:0 12px 30px rgba(0,0,0,.08); }
+.form-group { margin-bottom:16px; }
+label { display:block; margin-bottom:8px; font-weight:600; }
+input { width:100%; padding:10px 12px; border:1px solid #ccc; border-radius:8px; }
+button { width:100%; padding:12px 14px; background:#1976d2; color:#fff; border:none; border-radius:8px; cursor:pointer; }
+button:disabled { opacity:.7; }
+.error-message { color:#c62828; margin-bottom:16px; }

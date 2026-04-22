@@ -16,12 +16,15 @@
   font-weight: 500;
   color: #2D3E45;
   letter-spacing: -0.5px;
+  text-decoration: none;
 }
 
 .nav-links {
   display: flex;
   gap: 8px;
   align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
 }
 
 .nav-links a {

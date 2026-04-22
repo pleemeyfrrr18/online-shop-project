@@ -1,0 +1,216 @@
+.friends-container {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.section-header h1 {
+  margin: 0 0 8px;
+  color: #213547;
+  font-size: 30px;
+}
+
+.section-subtitle,
+.loading,
+.card-meta {
+  color: #607b84;
+}
+
+.loading,
+.error,
+.success {
+  padding: 14px 18px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.error {
+  background: #fdf0f0;
+  color: #c62828;
+  border: 1px solid #f5c2c2;
+}
+
+.success {
+  background: #f0fdf0;
+  color: #2e7d32;
+  border: 1px solid #c2f5c2;
+}
+
+.tab-navigation {
+  display: flex;
+  gap: 8px;
+  margin: 24px 0;
+  border-bottom: 2px solid #e7eef3;
+  flex-wrap: wrap;
+}
+
+.tab-button {
+  background: none;
+  border: none;
+  padding: 12px 16px;
+  color: #607b84;
+  cursor: pointer;
+  font-weight: 700;
+  border-bottom: 3px solid transparent;
+}
+
+.tab-button:hover,
+.tab-button.active {
+  background: #f7fbfd;
+  color: #264655;
+}
+
+.tab-button.active {
+  border-bottom-color: #0075ff;
+}
+
+.list-panel,
+.cards-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.cards-grid {
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+}
+
+.player-row,
+.request-card,
+.empty-state {
+  background: #fff;
+  border: 1px solid #e7eef3;
+  border-radius: 8px;
+}
+
+.player-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 130px;
+  gap: 16px;
+  align-items: center;
+  padding: 16px;
+}
+
+.player-main,
+.friend-card-main,
+.card-header,
+.actions {
+  display: flex;
+  gap: 12px;
+}
+
+.player-main,
+.friend-card-main {
+  align-items: center;
+  min-width: 0;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #e8f4f8;
+  color: #3b7c88;
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+}
+
+.player-main strong,
+.player-main span {
+  display: block;
+}
+
+.player-main span,
+.request-card p {
+  color: #607b84;
+  font-size: 14px;
+}
+
+.request-card {
+  padding: 20px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+}
+
+.card-header {
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.card-header h3,
+.friend-card-main h3 {
+  margin: 0;
+  color: #264655;
+  font-size: 18px;
+}
+
+.friend-card-main p {
+  margin: 4px 0 0;
+}
+
+.status {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.status-pending {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.status-accepted {
+  background: #d4edda;
+  color: #155724;
+}
+
+.status-declined {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.btn {
+  padding: 9px 12px;
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.btn-primary {
+  background: #4a8d9c;
+}
+
+.btn-accept {
+  flex: 1;
+  background: #2e7d32;
+}
+
+.btn-decline {
+  flex: 1;
+  background: #c62828;
+}
+
+.btn:disabled {
+  background: #9fb9c0;
+  cursor: not-allowed;
+}
+
+.empty-state {
+  padding: 44px 24px;
+  text-align: center;
+  color: #8fa3ac;
+}
+
+@media (max-width: 720px) {
+  .friends-container {
+    padding: 16px;
+  }
+
+  .player-row,
+  .cards-grid {
+    grid-template-columns: 1fr;
+  }
+}

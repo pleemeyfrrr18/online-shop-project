@@ -1,15 +1,23 @@
 from django.contrib.auth.models import User
+from django.db import transaction
+from django.db.models import Q
+from django.utils import timezone
 from rest_framework import status
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.generics import ListAPIView, ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import Team, TeamMember, Project, ProjectTask
+from .models import Team, TeamMember, Project, ProjectTask, JoinRequest, Invitation
 from .serializers import (
     TeamSerializer,
     TeamMemberSerializer,
     ProjectSerializer,
     ProjectTaskSerializer,
+    JoinRequestSerializer,
+    CreateJoinRequestSerializer,
+    PublicProjectSerializer,
+    InvitationSerializer,
+    CreateInvitationSerializer,
 )
 from engagement.utils import award_xp, log_activity
 
@@ -22,11 +30,95 @@ def user_is_team_owner(user, team):
     return TeamMember.objects.filter(team=team, user=user, role="owner").exists()
 
 
+def normalize_project_task_priorities(project):
+    tasks = list(ProjectTask.objects.filter(project=project).order_by("id"))
+    if not tasks:
+        return
+
+    if len(tasks) == 1:
+        task = tasks[0]
+        if task.priority_points != 100:
+            task.priority_points = 100
+            task.save(update_fields=["priority_points"])
+        return
+
+    total = sum(task.priority_points for task in tasks)
+    if total <= 0:
+        base = 100 // len(tasks)
+        remainder = 100 - (base * len(tasks))
+        for index, task in enumerate(tasks):
+            task.priority_points = base + (1 if index < remainder else 0)
+            task.save(update_fields=["priority_points"])
+        return
+
+    scaled = []
+    for task in tasks:
+        exact = task.priority_points * 100 / total
+        floor_value = int(exact)
+        scaled.append((task, floor_value, exact - floor_value))
+
+    remainder = 100 - sum(item[1] for item in scaled)
+    scaled.sort(key=lambda item: item[2], reverse=True)
+    for index, (task, floor_value, _fraction) in enumerate(scaled):
+        task.priority_points = floor_value + (1 if index < remainder else 0)
+        task.save(update_fields=["priority_points"])
+
+
+def refresh_project_completion(project):
+    tasks = list(ProjectTask.objects.filter(project=project).select_related("completed_by", "assigned_user", "created_by"))
+    if not tasks:
+        if project.status != "active":
+            project.status = "active"
+            project.completed_at = None
+            project.save(update_fields=["status", "completed_at"])
+        return
+
+    is_finished = all(task.status == "done" for task in tasks)
+    if not is_finished:
+        if project.status != "active":
+            project.status = "active"
+            project.completed_at = None
+            project.save(update_fields=["status", "completed_at"])
+        return
+
+    update_fields = []
+    if project.status != "finished":
+        project.status = "finished"
+        project.completed_at = timezone.now()
+        update_fields.extend(["status", "completed_at"])
+
+    if project.xp_awarded_at is None:
+        contributions = {}
+        for task in tasks:
+            contributor = task.completed_by or task.assigned_user or task.created_by
+            contributions[contributor] = contributions.get(contributor, 0) + task.priority_points
+
+        for contributor, points in contributions.items():
+            award_xp(contributor, points)
+            log_activity(
+                actor=contributor,
+                action_type="project_completed",
+                message=f'Project completed: "{project.title}" ({points} contribution XP).',
+                xp_change=points,
+                team=project.team,
+                project=project,
+            )
+
+        project.xp_awarded_at = timezone.now()
+        update_fields.append("xp_awarded_at")
+
+    if update_fields:
+        project.save(update_fields=update_fields)
+
+
 class TeamListCreateAPIView(ListCreateAPIView):
     serializer_class = TeamSerializer
 
     def get_queryset(self):
-        return Team.objects.filter(team__user=self.request.user).distinct().order_by("-id")
+        # Return teams where the user is a member
+        return Team.objects.filter(
+            team__user=self.request.user
+        ).distinct().order_by("-id")
 
     def perform_create(self, serializer):
         team = serializer.save(creator=self.request.user)
@@ -43,9 +135,17 @@ class TeamListCreateAPIView(ListCreateAPIView):
 
 class TeamDetailAPIView(RetrieveUpdateDestroyAPIView):
     serializer_class = TeamSerializer
+    lookup_field = 'pk'
 
     def get_queryset(self):
-        return Team.objects.filter(team__user=self.request.user).distinct()
+        # Return teams where the user is a member
+        return Team.objects.filter(team__user=self.request.user)
+
+    def destroy(self, request, *args, **kwargs):
+        team = self.get_object()
+        if not user_is_team_owner(request.user, team):
+            return Response({"detail": "Only team owners can delete this team."}, status=status.HTTP_403_FORBIDDEN)
+        return super().destroy(request, *args, **kwargs)
 
 
 class TeamMemberListCreateAPIView(APIView):
@@ -101,7 +201,10 @@ class ProjectListCreateAPIView(ListCreateAPIView):
     serializer_class = ProjectSerializer
 
     def get_queryset(self):
-        return Project.objects.filter(team__team__user=self.request.user).distinct().order_by("-id")
+        # Return projects from teams where the user is a member
+        return Project.objects.filter(
+            team__team__user=self.request.user
+        ).select_related('team', 'created_by').distinct().order_by("-id")
 
     def perform_create(self, serializer):
         team = serializer.validated_data["team"]
@@ -135,7 +238,14 @@ class ProjectDetailAPIView(RetrieveUpdateDestroyAPIView):
     serializer_class = ProjectSerializer
 
     def get_queryset(self):
-        return Project.objects.filter(team__team__user=self.request.user).distinct()
+        # Return projects from teams where the user is a member
+        return Project.objects.filter(team__team__user=self.request.user)
+
+    def destroy(self, request, *args, **kwargs):
+        project = self.get_object()
+        if project.created_by != request.user:
+            return Response({"detail": "Only the project owner can delete this project."}, status=status.HTTP_403_FORBIDDEN)
+        return super().destroy(request, *args, **kwargs)
 
 
 class ProjectTaskListCreateAPIView(ListCreateAPIView):
@@ -172,7 +282,9 @@ class ProjectTaskListCreateAPIView(ListCreateAPIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        project_task = serializer.save(created_by=request.user)
+        completed_by = request.user if serializer.validated_data.get("status") == "done" else None
+        project_task = serializer.save(created_by=request.user, completed_by=completed_by)
+        normalize_project_task_priorities(project)
         award_xp(request.user, 5)
         log_activity(
             actor=request.user,
@@ -183,6 +295,8 @@ class ProjectTaskListCreateAPIView(ListCreateAPIView):
             project=project,
             project_task=project_task,
         )
+        refresh_project_completion(project)
+        project_task.refresh_from_db()
         return Response(self.get_serializer(project_task).data, status=status.HTTP_201_CREATED)
 
 
@@ -209,6 +323,18 @@ class ProjectTaskDetailAPIView(RetrieveUpdateDestroyAPIView):
         response = super().update(request, *args, **kwargs)
         instance.refresh_from_db()
 
+        update_fields = []
+        if previous_status != "done" and instance.status == "done" and instance.completed_by_id is None:
+            instance.completed_by = request.user
+            update_fields.append("completed_by")
+        elif previous_status == "done" and instance.status != "done" and instance.completed_by_id is not None:
+            instance.completed_by = None
+            update_fields.append("completed_by")
+
+        if update_fields:
+            instance.save(update_fields=update_fields)
+            instance.refresh_from_db()
+
         if previous_status != "done" and instance.status == "done":
             award_xp(request.user, 12)
             log_activity(
@@ -221,4 +347,196 @@ class ProjectTaskDetailAPIView(RetrieveUpdateDestroyAPIView):
                 project_task=instance,
             )
 
+        normalize_project_task_priorities(instance.project)
+        refresh_project_completion(instance.project)
+        instance.refresh_from_db()
+        response.data = self.get_serializer(instance).data
         return response
+
+    def destroy(self, request, *args, **kwargs):
+        project_task = self.get_object()
+        project = project_task.project
+        if project.created_by != request.user:
+            return Response({"detail": "Only the project owner can delete project tasks."}, status=status.HTTP_403_FORBIDDEN)
+        response = super().destroy(request, *args, **kwargs)
+        normalize_project_task_priorities(project)
+        refresh_project_completion(project)
+        return response
+
+
+class PublicProjectListAPIView(ListCreateAPIView):
+    serializer_class = PublicProjectSerializer
+
+    def get_queryset(self):
+        # Return projects that are public (not private)
+        return Project.objects.filter(is_private=False).select_related('team', 'creator').order_by('-created_at')
+
+
+class JoinRequestListCreateAPIView(ListCreateAPIView):
+    serializer_class = CreateJoinRequestSerializer
+
+    def get_queryset(self):
+        return JoinRequest.objects.filter(requester=self.request.user).select_related('project', 'project__team')
+
+    def perform_create(self, serializer):
+        serializer.save(requester=self.request.user)
+
+
+class JoinRequestDetailAPIView(RetrieveUpdateDestroyAPIView):
+    serializer_class = JoinRequestSerializer
+
+    def get_queryset(self):
+        return JoinRequest.objects.filter(requester=self.request.user)
+
+
+class ReceivedJoinRequestsAPIView(ListCreateAPIView):
+    serializer_class = JoinRequestSerializer
+
+    def get_queryset(self):
+        # Return join requests for projects created by the user or where user is team owner
+        from django.db.models import Q
+        return JoinRequest.objects.filter(
+            Q(project__created_by=self.request.user) |
+            Q(project__team__creator=self.request.user)
+        ).select_related('requester', 'project', 'project__team').order_by('-created_at')
+
+
+class JoinRequestActionAPIView(APIView):
+    def post(self, request, request_id):
+        from django.db.models import Q
+        try:
+            join_request = JoinRequest.objects.get(
+                id=request_id,
+                project__created_by=request.user
+            )
+        except JoinRequest.DoesNotExist:
+            # Try checking if user is team owner
+            try:
+                join_request = JoinRequest.objects.get(
+                    id=request_id,
+                    project__team__creator=request.user
+                )
+            except JoinRequest.DoesNotExist:
+                return Response({"detail": "Join request not found or access denied."}, status=status.HTTP_404_NOT_FOUND)
+
+        action = request.data.get('action')
+        if action not in ['accept', 'decline']:
+            return Response({"detail": "Invalid action. Must be 'accept' or 'decline'."}, status=status.HTTP_400_BAD_REQUEST)
+
+        if join_request.status != 'pending':
+            return Response({"detail": "This join request has already been processed."}, status=status.HTTP_400_BAD_REQUEST)
+
+        if action == 'accept':
+            # Add user to the team
+            TeamMember.objects.get_or_create(
+                team=join_request.project.team,
+                user=join_request.requester,
+                defaults={'role': 'member'}
+            )
+            join_request.status = 'accepted'
+            message = f'Join request accepted. {join_request.requester.username} has been added to the team.'
+        else:
+            join_request.status = 'declined'
+            message = f'Join request declined for {join_request.requester.username}.'
+
+        join_request.save()
+
+        # Log activity
+        log_activity(
+            actor=request.user,
+            action_type="join_request_responded",
+            message=message,
+            team=join_request.project.team,
+            project=join_request.project,
+        )
+
+        return Response({"detail": message, "status": join_request.status})
+
+
+class InvitationListCreateAPIView(ListCreateAPIView):
+    def get_serializer_class(self):
+        if self.request.method == "POST":
+            return CreateInvitationSerializer
+        return InvitationSerializer
+
+    def get_queryset(self):
+        # Return invitations sent by the user
+        return Invitation.objects.filter(inviter=self.request.user).select_related(
+            "inviter",
+            "invitee",
+            "team",
+            "project",
+        ).order_by("-created_at")
+
+    def perform_create(self, serializer):
+        serializer.save(inviter=self.request.user)
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        invitation = serializer.save(inviter=request.user)
+        response_serializer = InvitationSerializer(invitation, context=self.get_serializer_context())
+        headers = self.get_success_headers(response_serializer.data)
+        return Response(response_serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+
+class ReceivedInvitationsAPIView(ListAPIView):
+    serializer_class = InvitationSerializer
+
+    def get_queryset(self):
+        # Return invitations received by the user
+        return Invitation.objects.filter(invitee=self.request.user).select_related('inviter', 'team', 'project').order_by('-created_at')
+
+
+class InvitationDetailAPIView(RetrieveUpdateDestroyAPIView):
+    serializer_class = InvitationSerializer
+
+    def get_queryset(self):
+        return Invitation.objects.filter(invitee=self.request.user)
+
+
+class InvitationActionAPIView(APIView):
+    def post(self, request, invitation_id):
+        try:
+            invitation = Invitation.objects.get(
+                id=invitation_id,
+                invitee=request.user
+            )
+        except Invitation.DoesNotExist:
+            return Response({"detail": "Invitation not found or access denied."}, status=status.HTTP_404_NOT_FOUND)
+
+        action = request.data.get('action')
+        if action not in ['accept', 'decline']:
+            return Response({"detail": "Invalid action. Must be 'accept' or 'decline'."}, status=status.HTTP_400_BAD_REQUEST)
+
+        if invitation.status != 'pending':
+            return Response({"detail": "This invitation has already been processed."}, status=status.HTTP_400_BAD_REQUEST)
+
+        if action == 'accept':
+            # Add user to the team
+            TeamMember.objects.get_or_create(
+                team=invitation.team,
+                user=invitation.invitee,
+                defaults={'role': 'member'}
+            )
+            invitation.status = 'accepted'
+            if invitation.project:
+                message = f'Invitation accepted. {invitation.project.title} has been added to your projects.'
+            else:
+                message = f'Invitation accepted. You have been added to {invitation.team.name}.'
+        else:
+            invitation.status = 'declined'
+            message = f'Invitation declined.'
+
+        invitation.save()
+
+        # Log activity
+        log_activity(
+            actor=request.user,
+            action_type="invitation_responded",
+            message=message,
+            team=invitation.team,
+            project=invitation.project,
+        )
+
+        return Response({"detail": message, "status": invitation.status})

@@ -29,6 +29,34 @@ export class AuthService {
       );
   }
 
+  register(credentials: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/register/`, credentials);
+  }
+
+  getProfile(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/me/`);
+  }
+
+  getUsers(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/users/`);
+  }
+
+  getFriends(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/friends/`);
+  }
+
+  getFriendRequests(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/friend-requests/`);
+  }
+
+  sendFriendRequest(toUserId: number): Observable<any> {
+    return this.http.post(`${this.apiUrl}/friend-requests/`, { to_user: toUserId });
+  }
+
+  respondToFriendRequest(requestId: number, action: 'accept' | 'decline'): Observable<any> {
+    return this.http.post(`${this.apiUrl}/friend-requests/${requestId}/action/`, { action });
+  }
+
   logout(): void {
     localStorage.removeItem(this.tokenKey);
   }

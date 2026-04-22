@@ -1,0 +1,65 @@
+<div class="teams-container">
+  <div class="section-header">
+    <h1>Teams</h1>
+    <p class="section-subtitle">Create and manage your study groups with clear team organization.</p>
+  </div>
+
+  @if (errorMessage) {
+    <div class="error">{{ errorMessage }}</div>
+  }
+
+  @if (successMessage) {
+    <div class="success">{{ successMessage }}</div>
+  }
+
+  <div class="teams-grid">
+    <div class="sidebar-card new-team-form">
+      <h2>Create Team</h2>
+      <label>
+        <span>Name</span>
+        <input [(ngModel)]="newTeam.name" placeholder="Team name" />
+      </label>
+      <label>
+        <span>Description</span>
+        <input [(ngModel)]="newTeam.description" placeholder="Short description" />
+      </label>
+      <button class="primary-button" (click)="createTeam()">Create Team</button>
+    </div>
+
+    <div class="team-list-panel">
+      @if (isLoading) {
+        <p class="loading">Loading teams...</p>
+      }
+
+      @if (!teams.length && !isLoading) {
+        <div class="empty-state">No teams yet. Create one to get started.</div>
+      }
+
+      <div class="team-list">
+        @for (team of teams; track team.id) {
+          <div class="team-card">
+            <div>
+              <h3>{{ team.name }}</h3>
+              <p>{{ team.description || 'No description available.' }}</p>
+              <div class="invite-row">
+                <select [(ngModel)]="selectedFriendByTeam[team.id]">
+                  <option value="">Invite friend</option>
+                  @for (friend of friends; track friend.id) {
+                    <option [value]="friend.id">{{ friend.username }}</option>
+                  }
+                </select>
+                <button (click)="sendTeamInvite(team)">Invite</button>
+              </div>
+            </div>
+            <div class="team-actions">
+              <a class="link-button" [routerLink]="['/teams', team.id]">View</a>
+              @if (isTeamOwner(team)) {
+                <button class="danger-button" (click)="deleteTeam(team)">Delete</button>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>

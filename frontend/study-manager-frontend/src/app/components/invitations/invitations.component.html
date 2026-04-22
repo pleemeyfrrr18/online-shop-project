@@ -1,0 +1,201 @@
+<div class="invitations-container">
+  <div class="section-header">
+    <h1>Invitations</h1>
+    <p class="section-subtitle">Invite registered users and manage team or project invitations.</p>
+  </div>
+
+  @if (isLoading) {
+    <p class="loading">Loading invitations...</p>
+  }
+
+  @if (errorMessage) {
+    <div class="error">{{ errorMessage }}</div>
+  }
+
+  @if (successMessage) {
+    <div class="success">{{ successMessage }}</div>
+  }
+
+  <div class="tab-navigation">
+    <button class="tab-button" [class.active]="activeTab === 'invite'" (click)="setActiveTab('invite')">
+      Invite Friends ({{ friends.length }})
+    </button>
+    <button class="tab-button" [class.active]="activeTab === 'received'" (click)="setActiveTab('received')">
+      Received ({{ receivedInvitations.length }})
+    </button>
+    <button class="tab-button" [class.active]="activeTab === 'sent'" (click)="setActiveTab('sent')">
+      Sent ({{ sentInvitations.length }})
+    </button>
+  </div>
+
+  @if (activeTab === 'invite') {
+    <div class="tab-content">
+      @if (!ownedTeams.length) {
+        <div class="empty-state">
+          <p>You need to own a team before you can invite users.</p>
+        </div>
+      } @else {
+        <div class="invite-toolbar">
+          <label>
+            <span>Team</span>
+            <select [(ngModel)]="selectedTeamId">
+              @for (team of ownedTeams; track team.id) {
+                <option [value]="team.id">{{ team.name }}</option>
+              }
+            </select>
+          </label>
+        </div>
+
+        @if (friends.length > 0) {
+          <div class="users-list">
+            @for (user of friends; track user.id) {
+              <div class="user-row">
+                <div class="user-main">
+                  <div class="avatar">{{ user.username.charAt(0).toUpperCase() }}</div>
+                  <div>
+                    <strong>{{ user.username }}</strong>
+                    @if (user.email) {
+                      <span>{{ user.email }}</span>
+                    }
+                  </div>
+                </div>
+
+                <input
+                  [(ngModel)]="inviteMessages[user.id]"
+                  placeholder="Optional message" />
+
+                <button
+                  class="btn btn-invite"
+                  (click)="sendInvitationToUser(user)"
+                  [disabled]="sendingInviteUserId === user.id || hasPendingInvite(user)">
+                  @if (hasPendingInvite(user)) {
+                    Invited
+                  } @else if (sendingInviteUserId === user.id) {
+                    Sending...
+                  } @else {
+                    Invite
+                  }
+                </button>
+              </div>
+            }
+          </div>
+        } @else {
+          <div class="empty-state">
+            <p>No friends available to invite yet.</p>
+          </div>
+        }
+      }
+    </div>
+  }
+
+  @if (activeTab === 'received') {
+    <div class="tab-content">
+      @if (receivedInvitations.length > 0) {
+        <div class="invitations-grid">
+          @for (invitation of receivedInvitations; track invitation.id) {
+            <div class="invitation-card">
+              <div class="invitation-header">
+                <h3>{{ invitation.project_title || invitation.team_name }}</h3>
+                <span class="status" [ngClass]="getStatusClass(invitation.status)">
+                  {{ invitation.status }}
+                </span>
+              </div>
+
+              <div class="invitation-details">
+                @if (invitation.project_title) {
+                  <div class="project-info">
+                    <strong>{{ invitation.project_title }}</strong>
+                    <span>Team: {{ invitation.team_name }}</span>
+                    @if (invitation.project_description) {
+                      <p>{{ invitation.project_description }}</p>
+                    }
+                    @if (invitation.project_deadline) {
+                      <span>Deadline: {{ invitation.project_deadline | date: 'mediumDate' }}</span>
+                    }
+                  </div>
+                }
+                <div class="detail-row">
+                  <span class="label">From:</span>
+                  <span class="value">{{ invitation.inviter_username }}</span>
+                </div>
+                @if (invitation.message) {
+                  <div class="detail-row">
+                    <span class="label">Message:</span>
+                    <span class="value">{{ invitation.message }}</span>
+                  </div>
+                }
+                <div class="detail-row">
+                  <span class="label">Received:</span>
+                  <span class="value">{{ invitation.created_at | date: 'short' }}</span>
+                </div>
+              </div>
+
+              @if (invitation.status === 'pending') {
+                <div class="action-buttons">
+                  <button class="btn btn-accept" (click)="acceptInvitation(invitation)">Accept</button>
+                  <button class="btn btn-decline" (click)="declineInvitation(invitation)">Decline</button>
+                </div>
+              }
+            </div>
+          }
+        </div>
+      } @else {
+        <div class="empty-state">
+          <p>No invitations received yet.</p>
+        </div>
+      }
+    </div>
+  }
+
+  @if (activeTab === 'sent') {
+    <div class="tab-content">
+      @if (sentInvitations.length > 0) {
+        <div class="invitations-grid">
+          @for (invitation of sentInvitations; track invitation.id) {
+            <div class="invitation-card">
+              <div class="invitation-header">
+                <h3>{{ invitation.project_title || invitation.team_name }}</h3>
+                <span class="status" [ngClass]="getStatusClass(invitation.status)">
+                  {{ invitation.status }}
+                </span>
+              </div>
+
+              <div class="invitation-details">
+                @if (invitation.project_title) {
+                  <div class="project-info">
+                    <strong>{{ invitation.project_title }}</strong>
+                    <span>Team: {{ invitation.team_name }}</span>
+                    @if (invitation.project_description) {
+                      <p>{{ invitation.project_description }}</p>
+                    }
+                    @if (invitation.project_deadline) {
+                      <span>Deadline: {{ invitation.project_deadline | date: 'mediumDate' }}</span>
+                    }
+                  </div>
+                }
+                <div class="detail-row">
+                  <span class="label">To:</span>
+                  <span class="value">{{ invitation.invitee_username }}</span>
+                </div>
+                @if (invitation.message) {
+                  <div class="detail-row">
+                    <span class="label">Message:</span>
+                    <span class="value">{{ invitation.message }}</span>
+                  </div>
+                }
+                <div class="detail-row">
+                  <span class="label">Sent:</span>
+                  <span class="value">{{ invitation.created_at | date: 'short' }}</span>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      } @else {
+        <div class="empty-state">
+          <p>You haven't sent any invitations yet.</p>
+        </div>
+      }
+    </div>
+  }
+</div>

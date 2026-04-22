@@ -117,6 +117,25 @@ h1 {
   color: #4A7F8E;
 }
 
+.xp-pop {
+  width: fit-content;
+  background: #EDF8F0;
+  color: #246B32;
+  border: 1px solid #BFE4C7;
+  border-radius: 999px;
+  padding: 5px 10px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.task-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.finish-btn,
 .delete-btn {
   background: #FEF0EE;
   color: #B85450;
@@ -128,6 +147,18 @@ h1 {
   font-weight: 500;
   width: fit-content;
   transition: background 0.2s;
+}
+
+.finish-btn {
+  background: #6B9FAE;
+  color: white;
+  border-color: #6B9FAE;
+}
+
+.finish-btn:disabled {
+  background: #AFC8D0;
+  border-color: #AFC8D0;
+  cursor: not-allowed;
 }
 
 .delete-btn:hover {

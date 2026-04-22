@@ -1,0 +1,137 @@
+<div class="friends-container">
+  <div class="section-header">
+    <h1>Friends</h1>
+    <p class="section-subtitle">Send friend requests, respond to incoming requests, and track request updates.</p>
+  </div>
+
+  @if (isLoading) {
+    <p class="loading">Loading friends...</p>
+  }
+
+  @if (errorMessage) {
+    <div class="error">{{ errorMessage }}</div>
+  }
+
+  @if (successMessage) {
+    <div class="success">{{ successMessage }}</div>
+  }
+
+  <div class="tab-navigation">
+    <button class="tab-button" [class.active]="activeTab === 'players'" (click)="setActiveTab('players')">
+      Players ({{ users.length }})
+    </button>
+    <button class="tab-button" [class.active]="activeTab === 'requests'" (click)="setActiveTab('requests')">
+      Requests ({{ receivedRequests.length }})
+    </button>
+    <button class="tab-button" [class.active]="activeTab === 'friends'" (click)="setActiveTab('friends')">
+      Friends ({{ friends.length }})
+    </button>
+    <button class="tab-button" [class.active]="activeTab === 'updates'" (click)="setActiveTab('updates')">
+      Updates ({{ updates.length }})
+    </button>
+  </div>
+
+  @if (activeTab === 'players') {
+    <div class="list-panel">
+      @if (users.length) {
+        @for (user of users; track user.id) {
+          <div class="player-row">
+            <div class="player-main">
+              <div class="avatar">{{ user.username.charAt(0).toUpperCase() }}</div>
+              <div>
+                <strong>{{ user.username }}</strong>
+                @if (user.email) {
+                  <span>{{ user.email }}</span>
+                }
+              </div>
+            </div>
+            <button class="btn btn-primary" [disabled]="!canSendRequest(user)" (click)="sendRequest(user)">
+              {{ playerButtonLabel(user) }}
+            </button>
+          </div>
+        }
+      } @else {
+        <div class="empty-state">No other registered users yet.</div>
+      }
+    </div>
+  }
+
+  @if (activeTab === 'requests') {
+    <div class="cards-grid">
+      @if (receivedRequests.length) {
+        @for (request of receivedRequests; track request.id) {
+          <div class="request-card">
+            <div class="card-header">
+              <h3>{{ request.from_user_username }}</h3>
+              <span class="status status-pending">pending</span>
+            </div>
+            <p>Sent you a friend request.</p>
+            <div class="card-meta">{{ request.created_at | date: 'short' }}</div>
+            <div class="actions">
+              <button
+                class="btn btn-accept"
+                [disabled]="respondingRequestId === request.id"
+                (click)="respondToRequest(request, 'accept')">
+                Accept
+              </button>
+              <button
+                class="btn btn-decline"
+                [disabled]="respondingRequestId === request.id"
+                (click)="respondToRequest(request, 'decline')">
+                Decline
+              </button>
+            </div>
+          </div>
+        }
+      } @else {
+        <div class="empty-state">No incoming friend requests.</div>
+      }
+    </div>
+  }
+
+  @if (activeTab === 'friends') {
+    <div class="cards-grid">
+      @if (friends.length) {
+        @for (friendship of friends; track friendship.id) {
+          <div class="request-card">
+            <div class="friend-card-main">
+              <div class="avatar">{{ friendship.friend.username.charAt(0).toUpperCase() }}</div>
+              <div>
+                <h3>{{ friendship.friend.username }}</h3>
+                @if (friendship.friend.email) {
+                  <p>{{ friendship.friend.email }}</p>
+                }
+              </div>
+            </div>
+            <div class="card-meta">Friends since {{ friendship.created_at | date: 'mediumDate' }}</div>
+          </div>
+        }
+      } @else {
+        <div class="empty-state">No friends yet. Send a request from Players.</div>
+      }
+    </div>
+  }
+
+  @if (activeTab === 'updates') {
+    <div class="cards-grid">
+      @if (updates.length) {
+        @for (request of updates; track request.id) {
+          <div class="request-card">
+            <div class="card-header">
+              <h3>{{ request.to_user_username }}</h3>
+              <span class="status" [ngClass]="statusClass(request.status)">{{ request.status }}</span>
+            </div>
+            @if (request.status === 'accepted') {
+              <p>{{ request.to_user_username }} accepted your friend request.</p>
+            } @else {
+              <p>{{ request.to_user_username }} declined your friend request.</p>
+            }
+            <div class="card-meta">{{ request.responded_at | date: 'short' }}</div>
+          </div>
+        }
+      } @else {
+        <div class="empty-state">No friend request updates yet.</div>
+      }
+    </div>
+  }
+</div>

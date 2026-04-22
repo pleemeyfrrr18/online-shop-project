@@ -1,0 +1,85 @@
+<div class="engagement-container">
+  <div class="section-header">
+    <h1>Engagement</h1>
+    <p class="section-subtitle">Track your XP, badges, recent study activity, and smart suggestions.</p>
+  </div>
+
+  @if (isLoading) {
+    <p class="loading">Loading engagement data...</p>
+  }
+
+  @if (errorMessage) {
+    <div class="error">{{ errorMessage }}</div>
+  }
+
+  @if (overview) {
+    <div class="stats-row">
+      <div class="stat-card">
+        <span class="stat-value">{{ overview.profile.xp }}</span>
+        <span class="stat-label">Total XP</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-value">{{ overview.profile.level }}</span>
+        <span class="stat-label">Current Level</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-value">{{ overview.badges.length }}</span>
+        <span class="stat-label">Badges Earned</span>
+      </div>
+    </div>
+  }
+
+  <div class="dashboard-grid">
+    <section class="overview-card">
+      <h2>Overview</h2>
+      <p><strong>User:</strong> {{ overview?.user.username }}</p>
+      <p><strong>XP:</strong> {{ overview?.profile.xp }}</p>
+      <p><strong>Level:</strong> {{ overview?.profile.level }}</p>
+      <p><strong>Badges earned:</strong> {{ overview?.badges.length }}</p>
+    </section>
+
+    <section class="badges-card">
+      <h2>Badges</h2>
+      @if (!badges.length) {
+        <p>No badges earned yet. Complete tasks to earn more rewards.</p>
+      } @else {
+        @for (badge of badges; track badge.id) {
+          <div class="badge-card">
+            <div class="badge-title">{{ badge.badge.name }}</div>
+            <p>{{ badge.badge.description }}</p>
+            <span>Earned: {{ badge.awarded_at | date:'mediumDate' }}</span>
+          </div>
+        }
+      }
+    </section>
+
+    <section class="activity-card">
+      <h2>Recent Activity</h2>
+      @if (!activity.length) {
+        <p>No recent actions yet. Start by completing a task or creating a project.</p>
+      } @else {
+        @for (entry of activity; track entry.id) {
+          <div class="activity-entry">
+            <p>{{ entry.message }}</p>
+            <small>{{ entry.created_at | date:'short' }}</small>
+          </div>
+        }
+      }
+    </section>
+
+    <section class="suggestions-card">
+      <h2>Suggestions</h2>
+      @if (!suggestions.length) {
+        <p>No suggestions available right now.</p>
+      } @else {
+        @for (suggestion of suggestions; track suggestion.object_id) {
+          <div class="suggestion-card">
+            <h3>{{ suggestion.title }}</h3>
+            <p>{{ suggestion.message }}</p>
+            <small>Type: {{ suggestion.type }}</small>
+          </div>
+        }
+      }
+    </section>
+  </div>
+</div>
