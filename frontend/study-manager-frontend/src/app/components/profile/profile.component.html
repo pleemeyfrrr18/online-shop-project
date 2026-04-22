@@ -1,0 +1,231 @@
+<div class="profile-container">
+  <div class="section-header">
+    <h1>Profile</h1>
+    <p class="section-subtitle">View your account details, level progress, and recent activity summary.</p>
+  </div>
+
+  @if (isLoading) {
+    <p class="loading">Loading profile...</p>
+  }
+
+  @if (errorMessage) {
+    <div class="error">{{ errorMessage }}</div>
+  }
+
+  @if (user) {
+    <div class="profile-grid">
+      <div class="profile-card">
+        <h2>Account Details</h2>
+        <div class="profile-row"><span>Username</span><strong>{{ user.username }}</strong></div>
+        <div class="profile-row"><span>Email</span><strong>{{ user.email || 'Not provided' }}</strong></div>
+        <div class="profile-row"><span>Joined</span><strong>{{ user.profile?.created_at | date:'longDate' }}</strong></div>
+        <div class="profile-row"><span>Last Updated</span><strong>{{ user.profile?.updated_at | date:'medium' }}</strong></div>
+      </div>
+
+      <div class="stats-card">
+        <h2>Progress</h2>
+        <div class="stats-grid">
+          <div class="stat-item">
+            <span class="stat-value">{{ user.profile?.xp || 0 }}</span>
+            <span class="stat-label">XP</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-value">{{ user.profile?.level || 1 }}</span>
+            <span class="stat-label">Level</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-value">{{ taskCount }}</span>
+            <span class="stat-label">Tasks</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-value">{{ projectCount }}</span>
+            <span class="stat-label">Projects</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bio-card">
+      <h2>Profile Summary</h2>
+      <p>
+        Welcome back, <strong>{{ user.username }}</strong>! Keep building your study momentum by completing tasks,
+        collaborating with teams, and leveling up your XP.
+      </p>
+    </div>
+
+    <!-- Dashboard Overview with Tabs -->
+    <div class="dashboard-section">
+      <h2>Your Overview</h2>
+      
+      <!-- Tab Navigation -->
+      <div class="tab-navigation">
+        <button 
+          class="tab-button" 
+          [class.active]="activeTab === 'overview'"
+          (click)="setActiveTab('overview')">
+          Overview
+        </button>
+        <button 
+          class="tab-button" 
+          [class.active]="activeTab === 'teams'"
+          (click)="setActiveTab('teams')">
+          Teams ({{ userTeams.length }})
+        </button>
+        <button 
+          class="tab-button" 
+          [class.active]="activeTab === 'projects'"
+          (click)="setActiveTab('projects')">
+          Projects ({{ userProjects.length }})
+        </button>
+        <button 
+          class="tab-button" 
+          [class.active]="activeTab === 'tasks'"
+          (click)="setActiveTab('tasks')">
+          Tasks ({{ userTasks.length }})
+        </button>
+      </div>
+
+      <!-- Overview Tab -->
+      @if (activeTab === 'overview') {
+        <div class="overview-content">
+          <!-- Teams Section -->
+          <div class="dashboard-card">
+            <div class="card-header">
+              <h3>Your Teams ({{ userTeams.length }})</h3>
+              <button class="view-all-btn" (click)="navigateToTeams()">View All</button>
+            </div>
+        @if (userTeams.length > 0) {
+          <div class="items-grid">
+            @for (team of userTeams | slice: 0:3; track team.id) {
+              <div class="item-card">
+                <h4>{{ team.name }}</h4>
+                <p>{{ team.description || 'No description' }}</p>
+                <small>Created: {{ team.created_at | date:'short' }}</small>
+              </div>
+            }
+          </div>
+        } @else {
+          <p class="no-items">You are not a member of any teams yet.</p>
+        }
+        </div>
+
+        <!-- Projects Section -->
+        <div class="dashboard-card">
+          <div class="card-header">
+            <h3>Your Projects ({{ userProjects.length }})</h3>
+            <button class="view-all-btn" (click)="navigateToProjects()">View All</button>
+          </div>
+          @if (userProjects.length > 0) {
+            <div class="items-grid">
+              @for (project of userProjects | slice: 0:3; track project.id) {
+                <div class="item-card">
+                  <h4>{{ project.title }}</h4>
+                  <p>{{ project.description || 'No description' }}</p>
+                  <small>Team: {{ project.team?.name || 'Unknown' }} | Created: {{ project.created_at | date:'short' }}</small>
+                </div>
+              }
+            </div>
+          } @else {
+            <p class="no-items">You have no projects yet.</p>
+          }
+        </div>
+
+        <!-- Tasks Section -->
+        <div class="dashboard-card">
+          <div class="card-header">
+            <h3>Your Tasks ({{ userTasks.length }})</h3>
+            <button class="view-all-btn" (click)="navigateToTasks()">View All</button>
+          </div>
+          @if (userTasks.length > 0) {
+            <div class="items-grid">
+              @for (task of userTasks | slice: 0:3; track task.id) {
+                <div class="item-card" [class.completed]="task.is_completed">
+                  <h4>{{ task.title }}</h4>
+                  <p>{{ task.description || 'No description' }}</p>
+                  <div class="task-meta">
+                    <span class="priority" [class]="task.priority?.toLowerCase()">{{ task.priority || 'Medium' }}</span>
+                    <span class="status">{{ task.is_completed ? 'Completed' : 'In Progress' }}</span>
+                    <small>Due: {{ task.due_date | date:'short' }}</small>
+                  </div>
+                </div>
+              }
+            </div>
+          } @else {
+            <p class="no-items">You have no tasks yet.</p>
+          }
+        </div>
+        </div>
+      }
+
+      <!-- Teams Tab -->
+      @if (activeTab === 'teams') {
+        <div class="tab-content">
+          <div class="dashboard-card">
+            <h3>All Your Teams ({{ userTeams.length }})</h3>
+            @if (userTeams.length > 0) {
+              <div class="items-grid">
+                @for (team of userTeams; track team.id) {
+                  <div class="item-card">
+                    <h4>{{ team.name }}</h4>
+                    <p>{{ team.description || 'No description' }}</p>
+                    <small>Created: {{ team.created_at | date:'short' }}</small>
+                  </div>
+                }
+              </div>
+            } @else {
+              <p class="no-items">You are not a member of any teams yet.</p>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Projects Tab -->
+      @if (activeTab === 'projects') {
+        <div class="tab-content">
+          <div class="dashboard-card">
+            <h3>All Your Projects ({{ userProjects.length }})</h3>
+            @if (userProjects.length > 0) {
+              <div class="items-grid">
+                @for (project of userProjects; track project.id) {
+                  <div class="item-card">
+                    <h4>{{ project.title }}</h4>
+                    <p>{{ project.description || 'No description' }}</p>
+                    <small>Team: {{ project.team?.name || 'Unknown' }} | Created: {{ project.created_at | date:'short' }}</small>
+                  </div>
+                }
+              </div>
+            } @else {
+              <p class="no-items">You have no projects yet.</p>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Tasks Tab -->
+      @if (activeTab === 'tasks') {
+        <div class="tab-content">
+          <div class="dashboard-card">
+            <h3>All Your Tasks ({{ userTasks.length }})</h3>
+            @if (userTasks.length > 0) {
+              <div class="items-grid">
+                @for (task of userTasks; track task.id) {
+                  <div class="item-card" [class.completed]="task.is_completed">
+                    <h4>{{ task.title }}</h4>
+                    <p>{{ task.description || 'No description' }}</p>
+                    <div class="task-meta">
+                      <span class="priority" [class]="task.priority?.toLowerCase()">{{ task.priority || 'Medium' }}</span>
+                      <span class="status">{{ task.is_completed ? 'Completed' : 'In Progress' }}</span>
+                      <small>Due: {{ task.due_date | date:'short' }}</small>
+                    </div>
+                  </div>
+                }
+              </div>
+            } @else {
+              <p class="no-items">You have no tasks yet.</p>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

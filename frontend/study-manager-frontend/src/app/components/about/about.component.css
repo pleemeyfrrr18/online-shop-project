@@ -1,0 +1,86 @@
+.about-page {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 32px 24px;
+}
+
+.about-hero {
+  background: #ffffff;
+  border: 1px solid #e2ebee;
+  border-radius: 8px;
+  padding: 42px;
+  box-shadow: 0 10px 24px rgba(107, 159, 174, 0.1);
+}
+
+.eyebrow {
+  display: inline-block;
+  color: #4a7f8e;
+  font-weight: 700;
+  margin-bottom: 14px;
+}
+
+.about-hero h1 {
+  max-width: 800px;
+  color: #213547;
+  font-size: 34px;
+  line-height: 1.16;
+  margin: 0 0 18px;
+}
+
+.about-hero p {
+  max-width: 720px;
+  color: #607b82;
+  font-size: 16px;
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+.primary-link {
+  display: inline-flex;
+  padding: 12px 18px;
+  border-radius: 8px;
+  color: #fff;
+  background: #6b9fae;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.feature-grid article {
+  background: #fff;
+  border: 1px solid #e2ebee;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.feature-grid h2 {
+  color: #213547;
+  font-size: 18px;
+  margin: 0 0 10px;
+}
+
+.feature-grid p {
+  color: #607b82;
+  line-height: 1.5;
+  margin: 0;
+}
+
+@media (max-width: 760px) {
+  .about-hero {
+    padding: 28px;
+  }
+
+  .about-hero h1 {
+    font-size: 26px;
+  }
+
+  .feature-grid {
+    grid-template-columns: 1fr;
+  }
+}
